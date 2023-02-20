@@ -1,0 +1,349 @@
+<div class="flex flex-col max-w-500 md:min-w-160 max-h-screen -m-6">
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8"
+        [ngClass]="oparationStatus === selectedDetails.oparationType ? 'bg-primary text-on-primary' : 'bg-gray-50 text-primary'">
+        <div class="text-lg font-medium">
+            <span *ngIf="oparationStatus === selectedDetails.oparationType">Are you Confirm to Proceed ?</span>
+        </div>
+        <button mat-icon-button (click)="close()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- content -->
+    <div class="relative flex bg-gray-50 flex-col flex-auto items-center px-6 sm:px-12">
+        <div class="w-full max-w-3xl">
+            <ng-container *ngIf="oparationStatus === selectedDetails.oparationType; else statusTemplate">
+                <!-- form -->
+                <div [ngSwitch]="selectedDetails.oparationType">
+                    <ng-container *ngSwitchCase="'sell'">
+                        <ng-container *ngTemplateOutlet="sell"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'exchange'">
+                        <ng-container *ngTemplateOutlet="exchange"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        <ng-container *ngTemplateOutlet="buy"></ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+
+<!-- template's -->
+<ng-template #buy>
+    <div class="grid sm:grid-cols-2 gap-6 w-full mt-8">
+        <div class="flex flex-col">
+            <fuse-card class="flex flex-col w-full p-4">
+                <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Sender Details</p>
+                </div>
+                <div class="flex flex-col">
+                    <div *ngIf="selectedDetails.finalObject.fromAccountName" class="flex items-center">
+                        <span class="leading-none font-lable">Account Name :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.fromAccountName}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.fromAccountId" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Account Id :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.fromAccountId}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.fromBic" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Bic :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.fromBic}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.fromIban" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Iban :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.fromIban}}</span>
+                    </div>
+    
+                </div>
+            </fuse-card>
+            <fuse-card class="flex flex-col mt-4 w-full p-4">
+                <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Receiver Details</p>
+                </div>
+                <div class="flex flex-col">
+                    <div *ngIf="selectedDetails.finalObject.toAddress" class="flex items-center">
+                        <span class="leading-none font-lable">Address :</span>
+                        <span style="overflow-wrap: anywhere;"
+                            class="leading-none">{{selectedDetails.finalObject.toAddress}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.toWalletId" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Wallet :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.toWalletId}}</span>
+                    </div>
+                </div>
+            </fuse-card>
+           
+        </div>
+        <div class="flex flex-col">
+            <fuse-card class="flex flex-col w-full p-4">
+                <!-- <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Translation details</p>
+                </div> -->
+                <div class="flex flex-col text-center">
+                    <span>Your are Buying</span>
+                    <span>
+                        <span style="color:green; font-size: 1.2rem;">+{{selectedDetails.finalObject.quantity}} {{selectedDetails.to.selectedAssetsSymbol}}</span>
+                        <span>= {{selectedDetails.finalObject.amountToCreditOrDebit}} {{selectedDetails.from.PrimaryCurrency}}</span>
+                    </span>
+                </div>
+                <div class="flex flex-col mt-4">
+                    <div class="flex justify-between">
+                        <span class="leading-none font-lable">Order Type :</span>
+                        <span class="leading-none">Market </span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.amountRespectToOne" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Buy At Price :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.amountRespectToOne}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.to.selectedAssetsNetwork" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Network :</span>
+                        <span class="leading-none">{{selectedDetails.to.selectedAssetsNetwork}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.fromExchangeFee.exchangeFee" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Exchange Fees  :</span>
+                        <span class="leading-none">{{selectedDetails.fromExchangeFee.exchangeFeePercentage}}({{selectedDetails.from.primaryCurrnecySymble}} {{selectedDetails.fromExchangeFee.exchangeFee}})</span>
+                    </div>
+                    <div *ngIf="selectedDetails.fromExchangeFee.totalAmount" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Total EUR   :</span>
+                        <span class="leading-none" style="color:red; font-size: 1.05rem;">- {{selectedDetails.from.primaryCurrnecySymble}}{{selectedDetails.fromExchangeFee.totalAmount}}</span>
+                    </div>
+                  
+                    <div *ngIf="!selectedDetails.buttonValidation" class="flex justify-center mt-8"style="color:red; font-size: 0.7rem;">
+                        You need {{selectedDetails.from.primaryCurrnecySymble}} {{selectedDetails.fromExchangeFee.totalAmount}} to buy {{selectedDetails.finalObject.quantity}} {{selectedDetails.to.selectedAssetsSymbol}}
+                    </div>
+                    <!-- <mat-error *ngIf="buyToData.errorMsg">
+                        {{buyToData.errorMsg}}
+                     </mat-error> -->
+                    <!-- <div *ngIf="selectedDetails.finalObject.quantity"  class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Total Amount :</span>
+                            <span class="leading-none">{{selectedDetails.finalObject.quantity+selectedDetails.finalObject.exchangeFee}}</span>
+                        </div> -->
+                        
+                </div>
+            </fuse-card>
+        </div>
+
+    </div>
+    <div class="flex items-center justify-end my-4">
+        <button (click)="close()" mat-button>
+            Cancel
+        </button>
+        <button (click)="continue('BUY')" [disabled]="!selectedDetails.buttonValidation" class="px-6 ml-3" mat-flat-button [color]="'primary'">
+            Buy
+        </button>
+    </div>
+</ng-template>
+<ng-template #sell>
+    <div class="grid sm:grid-cols-2 gap-6 w-full mt-8">
+        <div class="flex flex-col">
+            <fuse-card class="flex flex-col w-full p-8">
+                <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Sender Details</p>
+                </div>
+                <div class="flex flex-col">
+                    <div *ngIf="selectedDetails.finalObject.fromAddress" class="flex items-center">
+                        <span class="leading-none font-lable">Address :</span>
+                        <span style="overflow-wrap: anywhere;"
+                            class="leading-none">{{selectedDetails.finalObject.fromAddress}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.fromWalletId" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Wallet :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.fromWalletId}}</span>
+                    </div>
+                </div>
+            </fuse-card>
+            <fuse-card class="flex flex-col mt-4 w-full p-8">
+                <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Receiver Details</p>
+                </div>
+                <div class="flex flex-col">
+                    <div *ngIf="selectedDetails.finalObject.toAccountName" class="flex items-center">
+                        <span class="leading-none font-lable">Account Name :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.toAccountName}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.toAccountId" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Account Id :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.toAccountId}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.toBic" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Bic :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.toBic}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.toIban" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Iban :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.toIban}}</span>
+                    </div>
+
+                </div>
+            </fuse-card>
+        </div>
+        <div class="flex flex-col">
+            <fuse-card class="flex flex-col w-full p-8">
+                <!-- <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Amount Details</p>
+                </div> -->
+                <div class="flex flex-col text-center">
+                    <span>Your are Selling</span>
+                    <span>
+                        <span style="color:red; font-size: 1.2rem;">-{{selectedDetails.finalObject.quantity}} {{selectedDetails.from.selectedAssetsSymbol}}</span>
+                        <span>=  <span style="color:green; font-size: 1.2rem;">{{selectedDetails.finalObject.amountToCreditOrDebit}} {{selectedDetails.from.PrimaryCurrency}}</span></span>
+                    </span>
+                </div>
+                <div class="flex flex-col mt-4">
+                    <div *ngIf="selectedDetails.finalObject.quantity" class="flex justify-between">
+                        <span class="leading-none font-lable">Order Type :</span>
+                        <span class="leading-none">Market </span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.amountRespectToOne" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Buy At Price :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.amountRespectToOne}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.from.selectedAssetsNetwork" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Network :</span>
+                        <span class="leading-none">{{selectedDetails.from.selectedAssetsNetwork}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.fromExchangeFee.exchangeFee" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Exchange Fees  :</span>
+                        <span class="leading-none">{{selectedDetails.fromExchangeFee.exchangeFeePercentage}}({{selectedDetails.fromExchangeFee.exchangeFee}} {{selectedDetails.from.selectedAssetsSymbol}})</span>
+                    </div>
+                    <div *ngIf="selectedDetails.fromExchangeFee.totalAmount" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Total {{selectedDetails.from.selectedAssetsSymbol}}   :</span>
+                        <span class="leading-none" style="color:red; font-size: 1.05rem;">- {{selectedDetails.fromExchangeFee.totalAmount}} {{selectedDetails.from.selectedAssetsSymbol}}</span>
+                    </div>
+                    
+                    <div *ngIf="!selectedDetails.buttonValidation" class="flex justify-center mt-8"style="color:red; font-size: 0.7rem;">
+                        You need {{selectedDetails.from.primaryCurrnecySymble}} {{selectedDetails.fromExchangeFee.totalAmount}} to Sell
+                    </div>
+                    <!-- <mat-error *ngIf="buyToData.errorMsg">
+                        {{buyToData.errorMsg}}
+                     </mat-error> -->
+                    <!-- <div *ngIf="selectedDetails.finalObject.quantity"  class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Total Amount :</span>
+                            <span class="leading-none">{{selectedDetails.finalObject.quantity+selectedDetails.finalObject.exchangeFee}}</span>
+                        </div> -->
+                        
+                </div>
+            </fuse-card>
+        </div>
+    </div>
+    <div class="flex items-center justify-end my-4">
+        <button (click)="close()" mat-button>
+            Cancel
+        </button>
+        <button (click)="continue('SELL')" [disabled]="!selectedDetails.buttonValidation" class="px-6 ml-3" mat-flat-button [color]="'primary'">
+            Sell
+        </button>
+    </div>
+
+</ng-template>
+<ng-template #exchange>
+    <div class="grid sm:grid-cols-2 gap-6 w-full mt-8">
+        <div class="flex flex-col">
+            <fuse-card class="flex flex-col w-full p-8">
+                <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Sender Details</p>
+                </div>
+                <div class="flex flex-col">
+                    <div *ngIf="selectedDetails.finalObject.fromAddress" class="flex items-center">
+                        <span class="leading-none font-lable">Address :</span>
+                        <span style="overflow-wrap: anywhere;"
+                            class="leading-none">{{selectedDetails.finalObject.fromAddress}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.fromWalletId" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Wallet :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.fromWalletId}}</span>
+                    </div>
+                </div>
+            </fuse-card>
+            <fuse-card class="flex flex-col mt-4 w-full p-8">
+                <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Receiver Details</p>
+                </div>
+                <div class="flex flex-col">
+                    <div *ngIf="selectedDetails.finalObject.toAddress" class="flex items-center">
+                        <span class="leading-none font-lable">Address :</span>
+                        <span style="overflow-wrap: anywhere;"
+                            class="leading-none">{{selectedDetails.finalObject.toAddress}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.toWalletId" class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Wallet :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.toWalletId}}</span>
+                    </div>
+                </div>
+            </fuse-card>
+        </div>
+        <div class="flex flex-col">
+            <fuse-card class="flex flex-col w-full p-8">
+                <!-- <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="p-4 text-lg font-medium">Amount Details</p>
+                </div> -->
+                <div class="flex flex-col text-center">
+                    <span>Your are Selling</span>
+                    <span>
+                        <span style="color:red; font-size: 1.2rem;">-{{selectedDetails.finalObject.amountToCreditOrDebit}} {{selectedDetails.from.selectedAssetsSymbol}}</span>
+                        <span> =  <span style="color:green; font-size: 1.2rem;">{{selectedDetails.finalObject.quantity}} {{selectedDetails.to.selectedAssetsSymbol}}</span></span>    
+                    </span>
+                </div>
+                <div class="flex flex-col mt-4">
+                    <div *ngIf="selectedDetails.finalObject.quantity" class="flex justify-between">
+                        <span class="leading-none font-lable">Order Type :</span>
+                        <span class="leading-none">Market </span>
+                    </div>
+                    <div *ngIf="selectedDetails.finalObject.amountRespectToOne" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Buy At Price :</span>
+                        <span class="leading-none">{{selectedDetails.finalObject.amountRespectToOne}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.from.selectedAssetsNetwork" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Network :</span>
+                        <span class="leading-none">{{selectedDetails.from.selectedAssetsNetwork}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.fromExchangeFee.exchangeFee" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Exchange Fees  :</span>
+                        <span class="leading-none">{{selectedDetails.fromExchangeFee.exchangeFee}} {{selectedDetails.from.selectedAssetsSymbol}}</span>
+                    </div>
+                    <div *ngIf="selectedDetails.fromExchangeFee.totalAmount" class="flex justify-between mt-4">
+                        <span class="leading-none font-lable">Total {{selectedDetails.from.selectedAssetsSymbol}}   :</span>
+                        <span class="leading-none" style="color:red; font-size: 1.05rem;">- {{selectedDetails.fromExchangeFee.totalAmount}} {{selectedDetails.from.selectedAssetsSymbol}}</span>
+                    </div>
+                    <div *ngIf="!selectedDetails.buttonValidation" class="flex justify-center mt-8"style="color:red; font-size: 0.7rem;">
+                        You need {{selectedDetails.fromExchangeFee.totalAmount}} to Sell
+                    </div>
+                    <!-- <mat-error *ngIf="buyToData.errorMsg">
+                        {{buyToData.errorMsg}}
+                     </mat-error> -->
+                    <!-- <div *ngIf="selectedDetails.finalObject.quantity"  class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Total Amount :</span>
+                            <span class="leading-none">{{selectedDetails.finalObject.quantity+selectedDetails.finalObject.exchangeFee}}</span>
+                        </div> -->
+                        
+                </div>
+            </fuse-card>
+        </div>
+    </div>
+ 
+    <div class="flex items-center justify-end my-4">
+        <button (click)="close()" mat-button>
+            Cancel
+        </button>
+        <button (click)="continue('SWAP')"  [disabled]="!selectedDetails.buttonValidation" class="px-6 ml-3" mat-flat-button [color]="'primary'">
+            Exchange
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #statusTemplate>
+    <div class="font-mono p-16 mb-10 text-2xl text-center" [ngSwitch]="oparationStatus">
+        <span class="text-primary-500" *ngSwitchCase="'processing'">
+            Processing...
+        </span>
+        <span class="text-green-500" *ngSwitchCase="'success'">
+            Transaction is successfully completed.
+        </span>
+        <span class="text-warn-500" *ngSwitchCase="'failed'">
+            Transaction is declined.
+        </span>
+    </div>
+</ng-template>

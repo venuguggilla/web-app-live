@@ -1,0 +1,178 @@
+<div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden wallet-main">
+    <mat-drawer-container class="flex-auto sm:h-full bg-card">
+        <!-- Drawer -->
+        <mat-drawer class="w-full md:w-160 bgGrayColor dark:bg-gray-900" [autoFocus]="false" [mode]="drawerMode"
+            [opened]="drawerOpened" [position]="'end'" #drawer>
+            <div [ngSwitch]="drawerType">
+                <ng-container *ngSwitchCase="'create'">
+                    <create-wallet (cancel)="closeSub()"></create-wallet>
+                </ng-container>
+                <ng-container *ngSwitchCase="'update'">
+                    <create-wallet [onSelectedWallet]="onSelectedWallet" (cancel)="closeSub()"></create-wallet>
+                </ng-container>
+                <ng-container *ngSwitchCase="'assets'">
+                    <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+                        <div class="text-3xl font-extrabold tracking-tight leading-none">
+                            My Assets
+                        </div>
+                        <div>
+                            <button mat-icon-button (click)="closeSub()">
+                                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="(assets$ | async) as myAssets">
+                        <app-my-assets [assets]="myAssets"></app-my-assets>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <div>
+                        <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+                            <div class="text-3xl font-extrabold tracking-tight leading-none">
+                                {{onSelectedWallet.walletName}}
+                            </div>
+                            <div>
+                                <button class="mx-6" mat-flat-button [color]="'primary'" (click)="openDrawer('update')">
+                                    <span class="ml-2">Edit</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-10">
+                            <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+                                <div class="grid grid-cols-1 xl:grid-cols-1 gap-8 w-full">
+                                    <!-- Recent transactions table -->
+                                    <div
+                                        class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                                        <div class="p-6">
+                                            <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">My
+                                                Portfolio
+                                            </div>
+                                            <div class="text-secondary font-medium">Get insights that help you save</div>
+                                        </div>
+                                        <div class="overflow-x-auto mx-6">
+                                            <div class="font-semibold text-3xl md:text-5xl tracking-tighter">
+                                                {{onSelectedWallet?.totalPortfolioBalance?.symbol + ' ' + onSelectedWallet?.totalPortfolioBalance?.balance}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+                                <div class="grid grid-cols-1 xl:grid-cols-1 gap-8 w-full">
+                                    <!-- Assets table -->
+                                    <div
+                                        class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                                        <div class="p-6">
+                                            <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">
+                                                Assets
+                                            </div>
+                                            <div class="text-secondary font-medium">Be in control of your assets</div>
+                                        </div>
+                                        <div class="overflow-x-auto mx-6">
+                                            <app-my-assets [assets]="onSelectedWallet.asset"></app-my-assets>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+                                <div class="grid grid-cols-1 xl:grid-cols-1 gap-8 w-full">
+                                    <div
+                                        class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                                        <div class="p-6">
+                                            <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">
+                                                Recent
+                                                transactions</div>
+                                            <div class="text-secondary font-medium">Lorem Ipsum is simply dummy text of
+                                                the
+                                                printing
+                                                and typesetting</div>
+                                        </div>
+                                        <div class="overflow-x-auto mx-6">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                <div class="flex  items-center justify-between">
+                    <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                        Wallets
+                    </div>
+                    <div *ngIf="!drawerOpened">
+                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="openDrawer('assets')">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">My Assets</span>
+                        </button>
+                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="openDrawer('create')">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">Add Wallet</span>
+                        </button>
+                    </div>
+                    <div *ngIf="drawerOpened && drawerType === 'preview'">
+                        <button mat-icon-button (click)="closeSub()">
+                            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full mt-8">
+                    <div class="text-xl">Customise your wallet</div>
+                    <div class="text-secondary">Details of all your wallets</div>
+                </div>
+                <div class="xl:col-span-2 mt-8 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                    <div class="p-6">
+                        <div class="text-secondary font-medium">Total funds</div>
+                    </div>
+                    <div class="overflow-x-auto mx-6">
+                        <div class="font-semibold text-3xl md:text-5xl tracking-tighter">
+                            <ng-container *ngIf="(walletTotalBalance$ | async) as walletTotalBalance">
+                                {{walletTotalBalance.symbol + walletTotalBalance.totalPortfolioBalance}}
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ml-4">
+                <ng-container *ngIf="(wallets$ | async) as wallets">
+                    <ng-container *ngIf="wallets.length > 0; else noWallets">
+                        <ng-container *ngFor="let wallet of wallets; trackBy: trackByFn">
+                            <div class=" bank-card pointer">
+                                <div class="card-body" (click)="openDrawer('preview', wallet)">
+                                    <div class="background">
+                                        <img class="top-backround" [src]=walletDesign.background[wallet.color].img>
+                                        <img class="top-backround-shadow"
+                                            [src]=walletDesign.texture[wallet.texture].img>
+                                        <div class="top-left">
+                                            <h2 class="white">{{wallet.walletName}}</h2>
+                                        </div>
+                                        <div class="top-right">
+                                            <img [src]=walletDesign.icon[wallet.icons].img>
+                                        </div>
+                                        <div class="bottom-left">Total Portfolio<br>
+                                            <h2 class="bottom-price white">
+                                                {{wallet?.totalPortfolioBalance?.symbol + wallet?.totalPortfolioBalance?.balance}}
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <ng-template #noWallets>
+                <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                    <p class="table-no-record" colspan="9">No Wallets Found</p>
+                </div>
+            </ng-template>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</div>

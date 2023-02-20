@@ -1,0 +1,94 @@
+<div class="flex flex-col max-w-500 md:min-w-160 max-h-screen -m-6">
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8"
+        [ngClass]="oparationStatus === otherCurrencyExchange.oparationType ? 'bg-primary text-on-primary' : 'bg-gray-50 text-primary'">
+        <div class="text-lg font-medium">
+            <span *ngIf="oparationStatus === otherCurrencyExchange.oparationType">Are you Confirm to Proceed ?</span>
+        </div>
+        <button mat-icon-button (click)="close()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- content -->
+    <div class="relative flex bg-gray-50 flex-col flex-auto items-center px-6 sm:px-12">
+        <div class="w-full max-w-3xl">
+            <ng-container *ngIf="oparationStatus === otherCurrencyExchange.oparationType; else statusTemplate">
+                <!-- form -->
+                <div [ngSwitch]="otherCurrencyExchange.oparationType">
+                    <ng-container *ngSwitchCase="'exchange'">
+                        <ng-container *ngTemplateOutlet="exchange"></ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+
+<!-- template's -->
+
+<ng-template #exchange>
+    <div class="grid sm:grid-cols-1 gap-6 w-full mt-8">
+        <fuse-card class="flex flex-col w-full p-8">
+            <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                <p class="p-4 text-lg font-medium">Sender Details</p>
+            </div>
+            <div class="flex flex-col mb-6">
+                <div *ngIf="otherCurrencyExchange.formData.accountName" class="flex items-center">
+                    <span class="leading-none font-lable">Account Name :</span>
+                    <span style="overflow-wrap: anywhere;"
+                        class="leading-none">{{otherCurrencyExchange.formData.accountName}}</span>
+                </div>
+            </div>
+            <div class="flex flex-col mb-6">
+                <div *ngIf="otherCurrencyExchange.formData.accountType" class="flex items-center">
+                    <span class="leading-none font-lable">Account Type :</span>
+                    <span style="overflow-wrap: anywhere;"
+                        class="leading-none">{{otherCurrencyExchange.formData.accountType}}</span>
+                </div>
+            </div>
+            <div class="flex flex-col mb-6">
+                <div *ngIf="otherCurrencyExchange.finalObject.sourceAmount" class="flex items-center">
+                    <span class="leading-none font-lable">Amount :</span>
+                    <span style="overflow-wrap: anywhere;"
+                        class="leading-none">{{otherCurrencyExchange.finalObject.sourceAmount}}</span>
+                </div>
+            </div>
+        </fuse-card>
+        <fuse-card class="flex flex-col w-full p-8">
+            <div class=" mb-4 bg-gray-50 dark:bg-gray-700">
+                <p class="p-4 text-lg font-medium">Receiver Details</p>
+            </div>
+            <div class="flex flex-col">
+                <div *ngIf="otherCurrencyExchange.toAccount" class="flex items-center">
+                    <span class="leading-none font-lable">To :</span>
+                    <span style="overflow-wrap: anywhere;"
+                        class="leading-none">{{otherCurrencyExchange.toAccount}}</span>
+                </div>
+            </div>
+        </fuse-card>
+
+    </div>
+    <div class="flex items-center justify-end my-4">
+        <button mat-button (click)="close()">
+            Cancel
+        </button>
+        <button (click)="continue()" class="px-6 ml-3" mat-flat-button [color]="'primary'">
+            Exchange
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #statusTemplate>
+    <div class="font-mono p-16 mb-10 text-2xl text-center" [ngSwitch]="oparationStatus">
+        <span class="text-primary-500" *ngSwitchCase="'processing'">
+            Processing...
+        </span>
+        <span class="text-green-500" *ngSwitchCase="'success'">
+            Transaction is successfully completed.
+        </span>
+        <span class="text-warn-500" *ngSwitchCase="'failed'">
+            Transaction is declined.
+        </span>
+    </div>
+</ng-template>

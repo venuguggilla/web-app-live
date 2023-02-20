@@ -1,0 +1,115 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="form">
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Change your password</div>
+            <div class="text-secondary">You can only change your password twice within 24 hours!</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <!-- Current password -->
+            <div class="sm:col-span-4">
+                <mat-form-field class="w-full">
+                    <mat-label>Current password</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:key'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'currentPassword'"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Current password"
+                        matInput>
+                    <mat-error *ngIf="form.get('currentPassword').hasError('required')">
+                        Password is required!
+                        </mat-error>
+                </mat-form-field>
+            </div>
+            <!-- New password -->
+            <div class="sm:col-span-4">
+                <mat-form-field class="w-full">
+                    <mat-label>New password</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:key'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'newPassword'"
+                        placeholder="New password"
+                        type="password"
+                        matInput>
+                    <mat-error *ngIf="form.get('newPassword').hasError('required')">
+                        Password is required!
+                        </mat-error>
+                        <mat-error *ngIf="form.get('newPassword').hasError('minlength')">
+                        Password should be longer than 8 characters!
+                        </mat-error>
+                        <mat-error *ngIf="form.get('newPassword').hasError('maxlength')">
+                        Password can't be longer than 100 characters!
+                        </mat-error>
+                </mat-form-field>
+                <div class="mt-1 text-md text-hint">Minimum 8 characters. Must include numbers, letters and special characters.</div>
+            </div>
+             <!-- Confirm password -->
+             <div class="sm:col-span-4">
+                <mat-form-field class="w-full">
+                    <mat-label>Confirm Password</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:key'"
+                        matPrefix></mat-icon>
+                    <input
+                      matInput
+                      placeholder="Confirm your password..."
+                      formControlName="confirmPassword"
+                      type="password"
+                    />
+                    <mat-error *ngIf="form.get('confirmPassword').hasError('required')">
+                      Password confirmation is required!
+                    </mat-error>
+                    <mat-error *ngIf="form.get('confirmPassword').hasError('minlength')">
+                      Password should be longer than 8 characters!
+                    </mat-error>
+                    <mat-error *ngIf="form.get('confirmPassword').hasError('maxlength')">
+                      Password can't be longer than 100 characters!
+                    </mat-error>
+                    <mat-error *ngIf="form.get('confirmPassword').hasError('not_matching')">
+                      The password doesn't match!
+                    </mat-error>
+                  </mat-form-field>
+                <div class="mt-1 text-md text-hint">Minimum 8 characters. Must include numbers, letters and special characters.</div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-10 border-t"></div>
+
+        <div *ngIf="passwordChanged === 'changed'" class="text-secondary">successfully updated the password</div>
+
+        <mat-error *ngIf="passwordChanged === 'unable to change'">
+            unable to change the password
+        </mat-error>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button
+                mat-stroked-button
+                (click)="form.reset()"
+                type="button">
+                Reset
+            </button>
+            <button
+                class="ml-4"
+                mat-flat-button
+                [disabled]="!form.valid"
+                (click)="changePassword()"
+                type="button"
+                [color]="'primary'">Change
+            </button>
+        </div>
+    </form>
+ 
+</div>

@@ -1,0 +1,363 @@
+
+<div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden">
+    <mat-drawer-container class="flex-auto sm:h-full">
+        <!-- Drawer -->
+        <mat-drawer
+            class="sm:w-96 dark:bg-gray-900"
+            [autoFocus]="false"
+            [mode]="drawerMode"
+            [opened]="drawerOpened"
+            #drawer>
+            <!-- Header -->
+            <div *ngIf="newFrom">
+                <div *ngIf="!showPublicKey" class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                    <div class="flex  items-center justify-between">
+                        <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                            Generate API Key
+                        </div>
+                        <div *ngIf="drawerOpened">
+                            <button mat-icon-button (click)="closeSub()">
+                                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between  sm:my-10">
+                        <div class="w-full max-w-3xl">
+                             <!-- Form -->
+                            <form [formGroup]="genarateApiForm"(ngSubmit)="generateClientSecret()">
+                        
+                                <!-- Section -->
+                                <!-- <div class="w-full">
+                                    <div class="text-secondary">Your Api</div>
+                                </div> -->
+                                <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+                                    <div class="sm:col-span-4">
+                                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                                            <mat-label>Token Name</mat-label>
+                                            <input
+                                                [formControlName]="'tokenName'"
+                                                type="text"
+                                                autocomplete="off"
+                                                matInput>
+                                        </mat-form-field>
+                                    </div>
+                                    <mat-radio-group
+                                    aria-labelledby="example-radio-group-label"
+                                    class="flex flex-col"
+                                    [color]="'primary'"
+                                    (change)="radioChange($event)">
+                                        <mat-radio-button 
+                                        class="mb-2"
+                                        *ngFor="let access of accesss" [checked]="access.checked" [value]="access.value">
+                                            {{access.label}}
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                     <!-- Confirm password -->
+                                     <div *ngIf="shoePublicKeyinput" class="sm:col-span-4">
+                                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                                            <mat-label>Public Key</mat-label>
+                                            <input
+                                                [formControlName]="'publicKey'"
+                                                type="text"
+                                                matInput>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="sm:col-span-4">
+                                        <mat-checkbox
+                                            (change)="publicKey($event)"
+                                            [color]="'primary'"
+                                            >
+                                            Custom Public Key
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                                <mat-error class="mt-10" *ngIf="createError">
+                                    {{createError}}
+                                 </mat-error>
+                                <!-- Divider -->
+                                <div class="my-10 border-t"></div>
+                                
+                        
+                                <!-- Actions -->
+                                <div class="flex items-center justify-end">
+                                    <button
+                                        class="ml-4"
+                                        mat-flat-button
+                                        type="submit"
+                                        [disabled]="!genarateApiForm.valid"
+                                        [color]="'primary'">Generate
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div *ngIf="showPublicKey" class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                    <div class="flex  items-center justify-between">
+                        <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                           New Secret Keys
+                        </div>
+                        <div *ngIf="drawerOpened">
+                            <button mat-icon-button (click)="closeSub()">
+                                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between  sm:my-10">
+                        <div class="w-full max-w-3xl">
+                            <strong>IMPORTANT:</strong>  Please, securely save the token and the 
+                            secret key: you won't be able to see it after you navigate from this page or 
+                            create a new app token. 
+                            <strong>Don't share</strong> this information with untrusted parties and 
+                            <strong>don't embed</strong> it into your source code. Compromising this data 
+                            may lead to unauthorized access to your users' data
+                            <form [formGroup]="newKeys">
+                                <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+                                    <div class="sm:col-span-4">
+                                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                                            <mat-label>Token Name</mat-label>
+                                            <input
+                                                [formControlName]="'tokenName'"
+                                                type="text"
+                                                readonly
+                                                matInput>
+                                                
+                                        </mat-form-field>
+                                        <span class="flex items-center justify-between mt-3 hover:opacity-70 cursor-pointer"
+                                        [cdkCopyToClipboard]="newKeys.get('tokenName').value">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="'heroicons_solid:clipboard-copy'"
+                                                matPrefix></mat-icon>
+                                        </span>
+                                    </div>
+                                     <div class="sm:col-span-4">
+                                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                                            <mat-label>Public Key</mat-label>
+                                            <!-- <input
+                                                [formControlName]="'publicKey'"
+                                                type="text"
+                                                readonly
+                                                matInput> -->
+                                                <textarea
+                                                class="min-h-5 my-0 resize-none"
+                                                style="margin: 11px 0 !important; padding: 0 !important;"
+                                                [rows]="8"
+                                                readonly
+                                                [formControlName]="'publicKey'"
+                                                matInput
+                                                ></textarea>
+                                                
+                                        </mat-form-field>
+                                        <span class="flex items-center justify-between mt-3 hover:opacity-70 cursor-pointer"
+                                            [cdkCopyToClipboard]="newKeys.get('publicKey').value">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="'heroicons_solid:clipboard-copy'"
+                                                matPrefix></mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Divider -->
+                                <div class="my-10 border-t"></div>
+                             
+                            </form>
+                        </div>
+                        
+                  
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!newFrom">
+                <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                    <div class="flex  items-center justify-between">
+                        <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                            Update API Key
+                        </div>
+                        <div *ngIf="drawerOpened">
+                            <button mat-icon-button (click)="closeSub()">
+                                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between  sm:my-10">
+                        <div class="w-full max-w-3xl">
+                             <!-- Form -->
+                            <form [formGroup]="updateApiForm"(ngSubmit)="update()">
+                        
+                                <!-- Section -->
+                                <!-- <div class="w-full">
+                                    <div class="text-secondary">Your Api</div>
+                                </div> -->
+                                <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+                                    <div class="sm:col-span-4">
+                                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                                            <mat-label>Token Name</mat-label>
+                                            <input
+                                                [formControlName]="'tokenName'"
+                                                type="text"
+                                                matInput>
+                                        </mat-form-field>
+                                    </div>
+                                    <mat-radio-group
+                                    aria-labelledby="example-radio-group-label"
+                                    class="flex flex-col"
+                                    [color]="'primary'"
+                                    (change)="radioUpdate($event)">
+                                        <mat-radio-button 
+                                        class="mb-2"
+                                        *ngFor="let access of accesss" [checked]="access.checked" [value]="access.value">
+                                            {{access.label}}
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                     <!-- Confirm password -->
+                                     <!-- <div *ngIf="shoePublicKeyinput" class="sm:col-span-4">
+                                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                                            <mat-label>Public Key</mat-label>
+                                            <input
+                                                [formControlName]="'publicKey'"
+                                                type="text"
+                                                matInput>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="sm:col-span-4">
+                                        <mat-checkbox
+                                            (change)="publicKey($event)"
+                                            [color]="'primary'"
+                                            [checked]="updateApiFormCheckbox"
+                                            >
+                                            Custom Public Key
+                                        </mat-checkbox>
+                                    </div> -->
+                                </div>
+                                <mat-error class="mt-10" *ngIf="updateError">
+                                   {{updateError}}
+                                 </mat-error>
+                                <!-- Divider -->
+                                <div class="my-10 border-t"></div>
+                                
+                        
+                                <!-- Actions -->
+                                <div class="flex items-center justify-end">
+                                    <button
+                                        class="ml-4"
+                                        mat-flat-button
+                                        type="submit"
+                                        [disabled]="!updateApiForm.valid"
+                                        [color]="'primary'">Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+          
+            
+            
+        </mat-drawer>
+
+        <!-- Drawer content -->
+        <mat-drawer-content class="flex flex-col">
+            <!-- Actions -->
+            <ng-container>
+                <div>
+                    <div class="mb-10">
+                        
+                        <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+                            <div class="grid grid-cols-1 xl:grid-cols-1 gap-8 w-full">
+                                <div
+                                    class="xl:col-span-2 flex flex-col flex-auto rounded-2xl overflow-hidden">
+                                    <div class="flex items-center justify-end p-0">
+                                        <button
+                                            (click)="openForm()"
+                                            class="ml-4"
+                                            mat-flat-button
+                                            type="submit"
+                                            [disabled]="drawerOpened"
+                                            [color]="'primary'">Generate API Key
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Assets table -->
+                                <div
+                                    class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                                    <div class="p-6">
+                                        <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">
+                                            User API Key
+                                        </div>
+                                    </div>
+                                    <div class="overflow-x-auto mx-6">
+                                        <table class="w-full bg-transparent" [dataSource]="dataSource" mat-table>
+                                            <ng-container matColumnDef="tokenName">
+                                                <th mat-header-cell *matHeaderCellDef>
+                                                    Token Name
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap flex items-center">
+                                                        {{element.tokenName}}
+                                                    </span>
+                                                </td>
+                                            </ng-container>
+                                            <ng-container matColumnDef="expiryOn">
+                                                <th mat-header-cell *matHeaderCellDef>
+                                                    Expiry On
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                                                        {{element.expiryInDays | date : "medium"}}
+                                                    </span>
+                                                </td>
+                                            </ng-container>
+                                            <ng-container matColumnDef="fullAccess">
+                                                <th mat-header-cell *matHeaderCellDef>
+                                                    Full Access
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <span *ngIf="element.writeScope" class="pr-2">
+                                                        <mat-icon   svgIcon="heroicons_outline:check"></mat-icon>
+                                                    </span>
+                                                    <span *ngIf="!element.writeScope" class="pr-2">
+                                                        <mat-icon class="text-red-600" svgIcon="heroicons_outline:x"></mat-icon>
+                                                    </span>
+                                                    
+                                                </td>
+                                            </ng-container>
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef>
+                                                    Action
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <span class="pr-6 font-medium text-sm text-red-600whitespace-nowrap">
+                                                        <span class="pr-2 cursor-pointer" (click)="edit(element)">
+                                                            Edit
+                                                        </span>
+                                                        <span class="pr-2 text-red-600 cursor-pointer" (click)="deleteUserAPIKey(element.tokenName)">
+                                                            Delete
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                            </ng-container>
+                                            <tr mat-header-row *matHeaderRowDef="assetesTableColumns"></tr>
+                                            <tr class="order-row h-16" mat-row *matRowDef="let row; columns: assetesTableColumns;"></tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </mat-drawer-content>
+
+    </mat-drawer-container>
+
+</div>

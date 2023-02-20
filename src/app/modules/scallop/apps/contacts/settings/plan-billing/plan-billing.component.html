@@ -1,0 +1,122 @@
+
+<div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden wallet-main">
+
+    <mat-drawer-container class="flex-auto sm:h-full bg-card">
+
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full md:w-160 bgGrayColor dark:bg-gray-900"
+            [autoFocus]="false"
+            [mode]="drawerMode"
+            [opened]="drawerOpened"
+            [position]="'end'"
+            #drawer>
+            <!-- Header -->
+            <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+                <!-- Title -->
+                <div  *ngIf="selectedWallet" class="text-3xl font-extrabold tracking-tight leading-none">
+                    {{selectedWallet.walletName | lowercase}}</div>
+            <!-- transaction button -->
+            <div>
+                <!-- <button
+                    class="-ml-4"
+                    mat-button
+                    [color]="'primary'"
+                    (click)="checkTransaction(selectedWallet)">
+                    Transaction
+                </button> -->
+                <button
+                    class="mx-6"
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="checkTransaction(selectedWallet)">
+                    <span class="ml-2">Transaction</span>
+                </button>
+            </div>
+            </div>
+            <div class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+            <!-- About me -->
+            <fuse-card class="flex flex-col mb-8 w-full p-8" *ngFor="let getAssetes of selectedWalletAsset">
+                <div >
+                    <div class="text-2xl font-semibold leading-tight"><img style="width: 25px; margin-right: 10px; float: left;" src={{getAssetes.coinImage}} />{{getAssetes.fireblockAssetId}} ({{getAssetes.coinFullName}})</div>
+                    <hr class="w-full border-t my-6">
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <span class="leading-none font-lable">Wallet Address :</span>
+                            <span class="leading-none">{{getAssetes?.address !== null ?( getAssetes?.address || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Amount :</span>
+                            <span class="leading-none"> {{getAssetes?.available !==null ? (getAssetes?.available || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Available Amount :</span>
+                            <span class="leading-none">{{getAssetes?.availableAmount !== null ? (getAssetes?.availableAmount || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Locked Amount :</span>
+                            <span class="leading-none">{{getAssetes?.lockedAmount !== null ? (getAssetes?.lockedAmount || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Wallet Type :</span>
+                            <span class="leading-none">{{getAssetes?.walletType !== null ? (getAssetes?.walletType || '---') : '---'}}</span>
+                        </div>
+              
+                    </div>
+                </div>
+                
+            </fuse-card>
+            </div>
+            
+            
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+
+                <!-- Panel header -->
+                <div class="flex  items-center justify-between">
+                    <!-- Panel title -->
+                    <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                        {{userData.profile.firstName | lowercase}}
+                    </div>
+                    <div *ngIf="drawerOpened">
+                        <button
+                            mat-icon-button
+                            (click)="closeSub()">
+                            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full mt-8">
+                    <div class="text-xl">Change your plan</div>
+                    <div class="text-secondary">Upgrade or downgrade your current plan.</div>
+                </div>
+            
+            </div>
+            <div class="ml-4">
+                <!-- Panel links -->
+                <div class="bank-card pointer" *ngFor="let wallet of walletData">
+                    <div class=" card-body" (click)="openSub(wallet)">
+                        <div class="background">
+                            <img class="top-backround" src="./assets/wallet_background/walletCardBg8.png">
+                            <img class="top-backround-shadow" src="./assets/wallet_pattern/walletPatternBg6.png">
+                            <div class="top-left">
+                                <h2 class="white">{{wallet?.walletName | uppercase}}</h2>
+                            </div>
+                            <div class="bottom-left">Total Portfolio<br>
+                                <h2 class="bottom-price white" *ngIf="wallet?.totalPortfolioBalance">
+                                    {{wallet?.totalPortfolioBalance.symbol }} {{wallet?.totalPortfolioBalance.balance }}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!walletData">
+                    <p class="table-no-record" colspan="9">No Wallets Found</p>
+                </div>
+            </div>
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>

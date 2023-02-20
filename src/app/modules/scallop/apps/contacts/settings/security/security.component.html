@@ -1,0 +1,170 @@
+
+<div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden">
+
+    <mat-drawer-container class="flex-auto sm:h-full bg-card">
+
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full md:w-160 bgGrayColor dark:bg-gray-900"
+            [autoFocus]="false"
+            [mode]="drawerMode"
+            [opened]="drawerOpened"
+            [position]="'end'"
+            #drawer>
+            <!-- Header -->
+            <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+                <!-- Title -->
+                <div  *ngIf="selectedBeneficiaries" class="text-3xl font-extrabold tracking-tight leading-none">
+                    {{selectedBeneficiaries.userId | lowercase}}</div>
+                <!-- Close button -->
+                <div>
+                    <button
+                        *ngIf="selectedBeneficiaries"
+                        class="-ml-4"
+                        mat-button
+                        [color]="'warn'"
+                        (click)="blockSelectedAccount()">
+                        Block Account
+                    </button>
+                </div>
+            </div>
+            <div class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+            <!-- About me -->
+            <fuse-card class="flex flex-col mb-8 w-full p-8">
+                <div class="text-2xl font-semibold leading-tight">Ledger Info</div>
+                <hr class="w-full border-t my-6">
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <span class="leading-none font-lable">Name :</span>
+                        <span class="leading-none">{{selectedBeneficiaries?.name !== null ?( selectedBeneficiaries?.name || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Ledger id :</span>
+                        <span class="leading-none"> {{selectedBeneficiaries?.ledgerId !==null ? (selectedBeneficiaries?.ledgerId || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Balance :</span>
+                        <span class="leading-none">{{selectedBeneficiaries?.balance !== null ? (selectedBeneficiaries?.balance || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Available balance :</span>
+                        <span class="leading-none"*ngIf="selectedBeneficiaries?.availableBalance !== 'null'">
+                            {{selectedBeneficiaries?.availableBalance !== null ? (selectedBeneficiaries?.availableBalance || '0.0') : '0.0'}}
+                        </span>
+                        <span class="leading-none" *ngIf="selectedBeneficiaries?.availableBalance === 'null'">{{'---'}}</span>
+                    </div>
+                </div>
+            </fuse-card>
+            <fuse-card class="flex flex-col mb-8 w-full p-8">
+                <div class="text-2xl font-semibold leading-tight">Account info</div>
+                
+                <div class="flex flex-col mb-6"*ngFor="let item of selectedBeneficiaries?.identifiers">
+                    <hr class="w-full border-t my-6">
+                    <div class="flex items-center">
+                        <span class="leading-none font-lable">Country Specific Details :</span>
+                        <span class="leading-none">{{item?.countrySpecificDetails !== null ? (item?.countrySpecificDetails || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Account nimber :</span>
+                        <span class="leading-none">{{item?.accountNumber !== null ? (item?.accountNumber || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Type :</span>
+                        <span class="leading-none">{{item?.type !== null ? (item?.type || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Sort code :</span>
+                        <span class="leading-none">{{item?.sortCode !== null ? (item?.sortCode || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Iban :</span>
+                        <span class="leading-none">{{item?.iban !== null ? (item?.iban || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Bic :</span>
+                        <span class="leading-none">{{item?.bic !== null ? (item?.bic || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Currency :</span>
+                        <span class="leading-none">{{userDetailsObj?.primeryCurrency?.symbol}}{{userDetailsObj?.primeryCurrency?.currency}}</span>
+                    </div>
+                    
+                </div>
+            </fuse-card>
+
+            <fuse-card class="flex flex-col mb-8 w-full p-8">
+                <div class="text-2xl font-semibold leading-tight">Partner info</div>
+                <hr class="w-full border-t my-6">
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <span class="leading-none font-lable">Customer name :</span>
+                        <span class="leading-none">{{selectedBeneficiaries?.customerName !== null ?( selectedBeneficiaries?.customerName || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">Customer id :</span>
+                        <span class="leading-none"> {{selectedBeneficiaries?.customerId !==null ? (selectedBeneficiaries?.customerId || '---') : '---'}}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <span class="leading-none font-lable">External refernce :</span>
+                        <span class="leading-none">{{selectedBeneficiaries?.externalReference !== null ? (selectedBeneficiaries?.externalReference || '---') : '---'}}</span>
+                    </div>
+                </div>
+            </fuse-card>
+            </div>
+            
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+
+                <!-- Panel header -->
+                <div class="flex  items-center justify-between">
+                    <!-- Panel title -->
+                    <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                        {{userData.profile.firstName | lowercase}}
+                    </div>
+                    <div *ngIf="drawerOpened">
+                        <button
+                            mat-icon-button
+                            (click)="closeSub()">
+                            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full mt-8">
+                    <div class="text-xl">Change your plan</div>
+                    <div class="text-secondary">Upgrade or downgrade your current plan.</div>
+                </div>
+            
+            </div>
+            <div class="ml-4">
+                <!-- Panel links -->
+                <div class="bank-card pointer" *ngFor="let userData of userData?.ledgers">
+                    <div class=" card-body" (click)="openSub(userData)">
+                        <div class="background">
+                            <img class="top-backround" src="./assets/wallet_background/walletCardBg8.png">
+                            <img class="top-backround-shadow" src="./assets/wallet_pattern/walletPatternBg6.png">
+                            <div class="top-left">
+                                <h2 class="white">{{userData?.currency | uppercase}}</h2>
+                            </div>
+                            <div class="bottom-left">Available Balance<br>
+                                <h2 class="bottom-price white">
+                                    {{userData?.availableBalance}}
+                                </h2>
+                            </div>
+                            <div class="bottom-right">Date<br>
+                                <h2 class="bottom-price white">
+                                    {{userData?.createdDate | date:'mediumDate'}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!userData?.ledgers">
+                    <p class="table-no-record" colspan="9">No Data Found</p>
+                </div>
+            </div>
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>

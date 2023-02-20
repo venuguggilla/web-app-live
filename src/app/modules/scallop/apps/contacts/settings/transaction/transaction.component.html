@@ -1,0 +1,206 @@
+
+<div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden wallet-main">
+
+    <mat-drawer-container class="flex-auto sm:h-full bg-card">
+
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full md:w-160 bgGrayColor dark:bg-gray-900"
+            [autoFocus]="false"
+            [mode]="drawerMode"
+            [opened]="drawerOpened"
+            [position]="'end'"
+            #drawer>
+            <!-- Header -->
+            <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+                <!-- Title -->
+                <div  *ngIf="selectedFiatTx?.paymentDetails.reference" class="text-3xl font-extrabold tracking-tight leading-none">
+                    {{selectedFiatTx?.paymentDetails.reference | lowercase}}</div>
+            <!-- transaction button -->
+            <div>
+                <!-- <button
+                    class="-ml-4"
+                    mat-button
+                    [color]="'primary'"
+                    (click)="checkTransaction(selectedWallet)">
+                    Transaction
+                </button> -->
+                <!-- <button
+                    class="mx-6"
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="checkTransaction(selectedWallet)">
+                    <span class="ml-2">Transaction</span>
+                </button> -->
+            </div>
+            </div>
+            <div class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                <!-- About me -->
+               
+                <fuse-card class="flex flex-col mb-8 w-full p-8">
+                    <div class="text-2xl font-semibold leading-tight">Payment info</div>
+                    <hr class="w-full border-t my-6">
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <span class="leading-none font-lable">Reference Name :</span>
+                            <span class="leading-none">{{selectedFiatTx?.paymentDetails.reference !== null ?( selectedFiatTx?.paymentDetails.reference || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Payment Id :</span>
+                            <span class="leading-none"> {{selectedFiatTx?.paymentDetails.paymentId !==null ? (selectedFiatTx?.paymentDetails.paymentId || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Amount :</span>
+                            <span class="leading-none">{{selectedFiatTx?.paymentDetails.amount !== null ? (selectedFiatTx?.paymentDetails.amount || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Status :</span>
+                            <span class="leading-none">{{selectedFiatTx?.status !== null ? (selectedFiatTx?.status || '---') : '---'}}</span>
+                        </div>
+                    </div>
+                </fuse-card>
+
+                <fuse-card class="flex flex-col mb-8 w-full p-8">
+                    <div class="text-2xl font-semibold leading-tight">Sender info</div>
+                    <hr class="w-full border-t my-6">
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <span class="leading-none font-lable">Account Id :</span>
+                            <span class="leading-none">{{selectedFiatTx?.senderDetails?.accountId !== null ?( selectedFiatTx?.senderDetails?.accountId || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Sort Code :</span>
+                            <span class="leading-none"> {{selectedFiatTx?.senderDetails?.sortCode !==null ? (selectedFiatTx?.senderDetails?.sortCode || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Account Number :</span>
+                            <span class="leading-none">{{selectedFiatTx?.senderDetails?.accountNumber !== null ? (selectedFiatTx?.senderDetails?.accountNumber || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Sender Name :</span>
+                            <span class="leading-none">{{selectedFiatTx?.senderDetails?.senderName !== null ? (selectedFiatTx?.senderDetails?.senderName || '---') : '---'}}</span>
+                        </div>
+                    </div>
+                </fuse-card>
+
+                <fuse-card class="flex flex-col mb-8 w-full p-8">
+                    <div class="text-2xl font-semibold leading-tight">Recipient info</div>
+                    <hr class="w-full border-t my-6">
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <span class="leading-none font-lable">Beneficiary Name :</span>
+                            <span class="leading-none">{{selectedFiatTx?.recipientDetails?.beneficiaryName !== null ?( selectedFiatTx?.recipientDetails?.beneficiaryName || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Account Number :</span>
+                            <span class="leading-none"> {{selectedFiatTx?.recipientDetails?.accountNumber !==null ? (selectedFiatTx?.recipientDetails?.accountNumber || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Beneficiary Id :</span>
+                            <span class="leading-none">{{selectedFiatTx?.recipientDetails?.beneficiaryId !== null ? (selectedFiatTx?.recipientDetails?.beneficiaryId || '---') : '---'}}</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Sort Code :</span>
+                            <span class="leading-none">{{selectedFiatTx?.recipientDetails?.sortCode !== null ? (selectedFiatTx?.recipientDetails?.sortCode || '---') : '---'}}</span>
+                        </div>
+                    </div>
+                </fuse-card>
+                </div>
+            
+            
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+
+                <!-- Panel header -->
+                <div class="flex  items-center justify-between">
+                    <!-- Panel title -->
+                    <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                        {{userData.profile.firstName | lowercase}}
+                    </div>
+                    <div *ngIf="drawerOpened">
+                        <button
+                            mat-icon-button
+                            (click)="closeSub()">
+                            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full mt-8">
+                    <div class="text-xl">Change your plan</div>
+                    <div class="text-secondary">Upgrade or downgrade your current plan.lll</div>
+                </div>
+            
+            </div>
+            <div class="ml-4">
+                <!-- Panel links -->
+                <!-- *ngIf="fiatTransation !== ''"  -->
+                <div *ngIf="!drawerOpened" class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                    <div class="mat-table-container">
+            
+                        <table mat-table [dataSource]="dataSource">
+                            
+                            <ng-container matColumnDef="reference">
+                              <th mat-header-cell *matHeaderCellDef> Reference </th>
+                              <td mat-cell *matCellDef="let element"> {{element.paymentDetails.reference}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="paymentId">
+                              <th mat-header-cell *matHeaderCellDef> Payment id </th>
+                              <td mat-cell *matCellDef="let element"> {{element.paymentDetails.paymentId}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="amount">
+                              <th mat-header-cell *matHeaderCellDef> Amount </th>
+                              <td mat-cell *matCellDef="let element"> {{element.paymentDetails.amount}} </td>
+                            </ng-container>
+            
+                            <ng-container matColumnDef="currency">
+                                <th mat-header-cell *matHeaderCellDef> Currency </th>
+                                <td mat-cell *matCellDef="let element"> {{element.paymentDetails.currency}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="txStatus">
+                                <th mat-header-cell *matHeaderCellDef> Status </th>
+                                <td mat-cell *matCellDef="let element">{{element.status}}</td>
+                              </ng-container>
+        
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                            (click)="selectionn(row)"></tr>
+                          </table>
+                        
+                          <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                                         showFirstLastButtons
+                                         aria-label="Select page of periodic elements">
+                          </mat-paginator>
+             
+                      </div>
+                </div>
+                <div *ngIf="drawerOpened" class="flex flex-col divide-y border-t border-b">
+                    <ng-container *ngFor="let panel of fiatTransation">
+                        <div
+                            class="flex px-8 py-5 cursor-pointer"
+                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedPanel || selectedPanel !== panel?.paymentDetails.reference,
+                                        'bg-primary-50 dark:bg-hover': selectedPanel && selectedPanel === panel?.paymentDetails.reference}"
+                            (click)="fiatDetailTxList(panel)">
+                            <div class="ml-3">
+                                <div
+                                    class="font-medium leading-6"
+                                    [ngClass]="{'text-primary dark:text-primary-500': selectedPanel && selectedPanel === panel?.paymentDetails.reference}">
+                                    {{panel.paymentDetails.reference}}
+                                </div>
+                                <div class="mt-0.5 text-secondary">
+                                    {{panel?.paymentDetails.paymentId}}, {{panel.paymentDetails?.currency}}:{{panel?.paymentDetails.amount}}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+               
+            </div>
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>

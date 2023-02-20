@@ -1,0 +1,126 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full mt-8">
+            <!-- Recent transactions table -->
+            <div class="xl:col-span-2 flex p-6 flex-col flex-auto overflow-hidden">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight leading-8">Swap dashboard</h2>
+                    <div class="font-medium tracking-tight text-secondary">Stay on top of your cash flow with a smart dashboard</div>
+                </div>
+                <div class="flex items-center ">
+                    <div class="my-8 space-y-8" style="width: 100%;">
+                       
+                            <div class="flex flex-col mt-8 bg-card shadow rounded overflow-hidden">
+                                <div class="p-8 bg-gray-50 dark:bg-gray-700">
+                                    <p class="text-lg font-medium">Swappable</p>
+                                    <p class="text-secondary">Next-gen account to manage all your transactions seamlessly</p>
+                                </div>
+                                <mat-divider></mat-divider>
+                                <div class="p-8 pb-4">
+                                    
+                                    <button 
+                                    [ngClass]="{'customBtn-active': selectedBtn === 'buy', '': selectedBtn !== 'buy'}"
+                                    class="px-6 m-1 ml-0 mb-0 customBtn" 
+                                    mat-flat-button 
+                                    [color]="'primary'"
+                                    (click)="selectedBtn = 'buy'">
+                                        Buy
+                                    </button>
+                                    <button 
+                                    [ngClass]="{'customBtn-active': selectedBtn === 'sell', '': selectedBtn !== 'buy'}"
+                                    class="px-6 m-1 mb-0 customBtn" 
+                                    mat-flat-button 
+                                    [color]="'primary'"
+                                    (click)="selectedBtn = 'sell'">
+                                        Sell
+                                    </button>
+                                    <button 
+                                    [ngClass]="{'customBtn-active': selectedBtn === 'exchange', '': selectedBtn !== 'buy'}"
+                                    class="px-6 m-1 mb-0 customBtn" 
+                                    mat-flat-button 
+                                    [color]="'primary'"
+                                    (click)="selectedBtn = 'exchange'">
+                                        Exchange
+                                    </button>
+                                <div *ngIf="selectedBtn === 'buy'">
+                                    <swap-buy></swap-buy>
+                                </div>
+
+                                <div *ngIf="selectedBtn === 'sell'">
+                                    <swap-sell></swap-sell>
+                                </div>
+
+                                <div *ngIf="selectedBtn === 'exchange'">
+                                    <swap-exchange></swap-exchange>
+                                </div>
+                                
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto">
+
+                <!-- <div class="mt-6">
+                    Last month; you had <strong>223</strong> expense transactions, <strong>12</strong> savings entries and <strong>4</strong> bills.
+                </div> -->
+                <!-- <fuse-card class="flex flex-col max-w-80 w-full mt-8 px-8 pt-6 pb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-2xl font-semibold leading-tight">News</div>
+                    </div>
+                    <div class="flex flex-col mt-5">
+                        <div class="flex">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div><b>20% OFF</b> in your favorite hats shop on next Friday.</div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Upcoming meetups within 20 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Concerts from your favorite bands available within 100 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-card> -->
+                <!-- <fuse-card class="flex flex-col max-w-80 w-full mt-8 px-8 pt-6 pb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-2xl font-semibold leading-tight">News</div>
+                    </div>
+                    <div class="flex flex-col mt-5">
+                        <div class="flex">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div><b>20% OFF</b> in your favorite hats shop on next Friday.</div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Upcoming meetups within 20 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Concerts from your favorite bands available within 100 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-card> -->
+
+            </div>
+        </div>
+    </div>
+</div>

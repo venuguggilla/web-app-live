@@ -1,0 +1,522 @@
+
+
+<div class="flex flex-col flex-auto w-full">
+ <!-- Header -->
+ <div class="bg-card">
+    <div class="flex flex-col w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+        <div class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-8 sm:my-12">
+            <!-- Avatar and name -->
+            <div class="flex flex-auto items-center min-w-0">
+                <div class="flex-0 w-16 h-16 rounded-full overflow-hidden">
+                    <img
+                        class="w-full h-full object-cover"
+                        [src]="user.avatar">
+                </div>
+                <div class="flex flex-col min-w-0 ml-4">
+                    <ng-container>
+                        <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">Welcome, {{userNameData.name}}!</div>
+                    </ng-container>
+                    <div class="flex items-center">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                        <div class="ml-1.5 leading-6 truncate text-secondary">Keep a track of your finances</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Actions -->
+            <div class="flex items-center mt-6 sm:mt-0 sm:ml-2 space-x-3">
+                <!-- <button
+                    mat-flat-button
+                    [color]="'primary'">
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:cog'"></mat-icon>
+                    <span class="ml-2">Settings</span>
+                </button> -->
+            </div>
+        </div>
+        <!-- Project selector -->
+  
+    </div>
+</div>
+
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-0 md:p-8 pb-0 md:pb-0">
+        <div class="gap-6 ">
+            <mat-radio-group
+                class="invisible absolute w-0 h-0 pointer-events-none"
+                #currencyRadioGroup="matRadioGroup">
+                <ng-container *ngFor="let currency of currencys; trackBy: trackByFn">
+                    <mat-radio-button [value]="currency.currency"></mat-radio-button>
+                </ng-container>
+            </mat-radio-group>
+            <div class="flex flex-wrap w-full max-w-screen-xl mx-auto md:pb-0">
+                <div class="grid sm:grid-cols-5 gap-6 mt-3">
+                    <ng-container *ngFor="let currency of currencys; trackBy: trackByFn">
+                        <!-- <div *ngIf="currency.accountType ==='EUR_ACCOUNT'|| (selectedCurrency === 'otherCurrency')"> -->
+                        <div>
+                            <div
+                            class="relative currency-card flex flex-col items-start justify-start p-6 rounded-md shadow cursor-pointer bg-card"
+                            [ngClass]="{'ring ring-inset ring-primary': selectedCountry === currency.accountType}"
+                            (click)="currencyRadioGroup.accountType = currency.accountType ; 
+                            selectedCountry = currency.accountType;
+                            toggleCurrency(currency);
+                            currency.accountType ==='EUR_ACCOUNT'?
+                            scheduleDaySelector.value = 'prymariCurrency'
+                            :scheduleDaySelector.value = 'otherCurrency';
+                            currency.accountType ==='EUR_ACCOUNT'?
+                            selectedCurrency = 'prymariCurrency'
+                            :selectedCurrency = 'otherCurrency'">
+                            <ng-container *ngIf="selectedCountry === currency.accountType">
+                                <mat-icon
+                                    class="absolute top-0 right-0 mt-3 mr-3 icon-size-7 text-primary"
+                                    [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
+                            </ng-container>
+                            <div class="font-medium"> 
+                                <img *ngIf="currency.accountType === 'EUR_ACCOUNT'"  src="https://scallop-bucket.s3.eu-west-1.amazonaws.com/upload_file/image.png">
+                                <img *ngIf="currency.accountType !== 'EUR_ACCOUNT'" [src]="currency.imageUrl">
+                            </div>
+                            <!-- <ng-container *ngFor="let allAccount of currency.allAccounts.content">
+                                <div class="mt-1 whitespace-normal text-secondary">country: {{allAccount.country}}</div>
+                            </ng-container> -->
+                            <div class="flex-auto"></div>
+                            <div class="mt-3 text-lg">
+                                <span>
+                                    <span *ngIf="currency.accountType ==='EUR_ACCOUNT'">€</span>
+                                    <span *ngIf="currency.accountType ==='GBP_ACCOUNT'">£</span>
+                                    <span *ngIf="currency.accountType ==='SGD_ACCOUNT'">S$</span>
+                                    <span *ngIf="currency.accountType ==='MYR_ACCOUNT'">RM</span>
+                                    {{currency.amount}}</span>
+                            </div>
+                        </div>
+                        </div>
+                        
+                    </ng-container>
+                    <div class="flex items-center">
+                        <mat-icon [svgIcon]="'heroicons_outline:plus-circle'"></mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full mt-3">
+            <!-- Recent transactions table -->
+            <div class="xl:col-span-2 flex p-6 flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-center ">
+                    <div class="flex w-full flex-col">
+                        <div class="flex flex-col sm:flex-row items-start justify-between">
+                            <div class="text-lg font-medium tracking-tight leading-6 truncate">Total Balance</div>
+                            <div class="mt-3 sm:mt-0 sm:ml-2">
+                                <mat-button-toggle-group
+                                    value="prymariCurrency"
+                                    #scheduleDaySelector="matButtonToggleGroup">
+                                    <mat-icon (click)="reloadPage()" class="mt-2 mr-6 hover:text-primary-400 cursor-pointer" [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+                                    <mat-button-toggle (click)="selectedCurrency = 'prymariCurrency';selectedCountry = 'EUR_ACCOUNT'" value="prymariCurrency">Primary currency</mat-button-toggle>
+                                    <mat-button-toggle (click)="showOtherCurrencys()" value="otherCurrency">Other currencies</mat-button-toggle>
+                                </mat-button-toggle-group>
+                            </div>
+                        </div>
+                        <div class="text-secondary font-medium">Your funds</div>
+                    </div>
+                </div>
+                <ng-container *ngIf="selectedCurrency === 'prymariCurrency'">
+                   
+                    <div class="flex flex-col sm:flex-row items-end">
+                        <div class="mt-6 mr-6">
+                            <div class="font-semibold text-3xl md:text-5xl tracking-tighter">{{userPrimeryCurrency.symbol}} {{selectedAccount.availableBalance}}</div>
+                            <div class="text-secondary font-medium">Available Balance</div>
+                        </div>
+                        <div class="mt-6">
+                            <div class="font-semibold text-2xl md:text-3xl tracking-tighter">{{userPrimeryCurrency.symbol}} {{selectedAccount.balance}}</div>
+                            <div class="text-secondary font-medium">Current Balance</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center mt-8">
+                        <div class="flex flex-col">
+                            <div class="text-lg font-medium tracking-tight leading-6 truncate">Accounts</div>
+                            <div class="text-green-600 font-medium text-sm">
+                                All details 
+                            </div>
+                            <ng-container *ngIf="(accounts$ | async) as accounts">
+                                <ng-container *ngIf="accounts.length > 0; else noAccounts">
+                                    <ng-container *ngFor="let account of accounts; trackBy: trackByFn">
+                                        <div class="flex flex-row flex-wrap mt-4 -mx-6 all-account">
+                                            <div class="flex flex-col mx-6 my-3">
+                                                <div class="text-sm font-medium leading-none text-secondary">Account</div>
+                                                <div class="mt-2 font-medium">{{account.ledgerId}}</div>
+                                            </div>
+                                            <div class="flex flex-col mx-6 my-3">
+                                                <div class="text-sm font-medium leading-none text-secondary">Iban</div>
+                                                <div class="mt-2 font-medium">{{account.iban}}</div>
+                                            </div>
+                                            <div class="flex flex-col mx-6 my-3">
+                                                <div class="text-sm font-medium leading-none text-secondary">Bic</div>
+                                                <div class="mt-2 font-medium">{{account.bic}}</div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedCurrency === 'otherCurrency'">
+                   
+                    <div class="flex flex-col sm:flex-row items-end">
+                        <div class="mt-6 mr-6">
+                            <div class="font-semibold text-3xl md:text-5xl tracking-tighter">
+                                <span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='EUR_ACCOUNT'">€</span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='GBP_ACCOUNT'">£</span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='SGD_ACCOUNT'">S$</span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='MYR_ACCOUNT'">RM</span>
+                                    {{otherCurrencyAccountselected.amount}}
+                                </span>
+                            </div>
+                            <div class="text-secondary font-medium">Available Balance</div>
+                        </div>
+                        <div class="mt-6">
+                            <div class="font-semibold text-2xl md:text-3xl tracking-tighter">
+                                <span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='EUR_ACCOUNT'">€</span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='GBP_ACCOUNT'">£</span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='SGD_ACCOUNT'">S$</span>
+                                    <span *ngIf="otherCurrencyAccountselected.accountType ==='MYR_ACCOUNT'">RM</span>
+                                    {{otherCurrencyAccountselected.amount}}
+                                </span>    
+                            </div>
+                            <div class="text-secondary font-medium">Current Balance</div>
+                        </div>
+                    </div>
+                    
+                    <ng-container *ngIf="otherCurrencyAccountselected">
+                        <div class="text-lg font-medium tracking-tight leading-6 truncate mt-12">
+                           Seclected Currency : 
+                           {{otherCurrencyAccountselected.accountType}}
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="selectedCurrency === 'exchange'">
+                    <div>
+                        
+                        <div class="xl:col-span-2 w-full flex p-6 flex-col flex-auto overflow-hidden">
+                            <div>
+                                <div class="my-8 space-y-8">
+                                   
+                                        <div class="flex w-full flex-col bg-card shadow rounded overflow-hidden">
+                                           
+                                            <div class="p-8 pb-4">
+                                                
+                                                <form [formGroup]="otherCurrency">
+                                                    <!-- From form group -->
+                                                    <div [formGroupName]="'from'"
+                                                        class="flex flex-col bg-gray-100 p-6 rounded gt-xs:flex-row gt-xs:items-baseline">
+                                                        <span
+                                                            class="flex items-center justify-between w-full font-semibold mb-1 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">
+                                                            <span>
+                                                                From
+                                                            </span>
+                                                            <span>
+                                                                Available Balance:
+                                                                <ng-container
+                                                                    *ngIf="selectedAccount.availableBalance; else zeroBalTemplate;">
+                                                                    {{selectedAccount.availableBalance}}
+                                                                </ng-container>
+                                                                <ng-template #zeroBalTemplate>
+                                                                    0
+                                                                </ng-template>
+                                                            </span>
+                                                        </span>
+                                                        <mat-form-field class="fuse-mat-dense flex-auto">
+                                                            <mat-select class="py-6" [formControlName]="'accounts'">
+                                                                <ng-container *ngIf="(accounts$ | async) as accounts">
+                                                                    <mat-option [value]="a" *ngFor="let a of accounts">
+                                                                        <span class="flex items-center">
+                                                                            <img class="mr-3" style="width: 20px;"
+                                                                                [src]=a.imageUrl/>
+                                                                            <span>{{a.accountName}} {{a.availableBalance}}</span>
+                                                                        </span>
+                                                                    </mat-option>
+                                                                </ng-container>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                        <mat-form-field class="fuse-mat-dense flex-auto">
+                                                            <input [autocomplete]="'off'" class="py-6 " matInput [formControlName]="'amount'">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <!-- Switch Action -->
+                                                    <div class="flex flex-col p-2 gt-xs:flex-row gt-xs:items-baseline disabled">
+                                                        <span class="flex relative items-center justify-center w-full">
+                                                            <span style="width: 50px;height:50px" matTooltip="Switch"
+                                                                class="flex items-center justify-center absolute bg-accent hover:bg-primary-400 cursor-pointer rounded-full border-2">
+                                                                <mat-icon class="text-on-primary"
+                                                                    svgIcon="heroicons_solid:arrow-sm-down"></mat-icon>
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <!-- To form group -->
+                                                    <div [formGroupName]="'to'"
+                                                        class="flex flex-col bg-gray-100 p-6 rounded gt-xs:flex-row gt-xs:items-baseline">
+                                                        <span
+                                                            class="flex items-center justify-between w-full font-semibold mb-1 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">
+                                                            <span>
+                                                                To
+                                                            </span>
+                                                        </span>
+                                                        <mat-form-field class="fuse-mat-dense flex-auto">
+                                                            <mat-select class="py-6" [formControlName]="'accounts'">
+                                                                <mat-option [value]="a" *ngFor="let a of currencys">
+                                                                    <span class="flex items-center">
+                                                                        <img class="mr-3" style="width: 20px;"
+                                                                            [src]=a.imageUrl/>
+                                                                        <span>{{a.accountType}} {{a.amount}}</span>
+                                                                    </span>
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </form>
+            
+                                            
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end mt-10">
+                                            <button mat-button (click)="selectedCurrency = 'prymariCurrency'">
+                                                Cancel
+                                            </button>
+                                            <button (click)="exchangeConfirmPop()" class="px-6 ml-3" mat-flat-button [color]="'primary'" >
+                                                Proceed Exchange
+                                            </button>
+                                        </div>  
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </ng-container>
+            </div>
+
+            
+    
+            <!-- Budget -->
+            <div class="flex flex-col flex-auto p-6 bg-card rounded-2xl shadow">
+                <div class="flex items-center">
+                    <div class="flex flex-col">
+                        <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Transactions</div>
+                        <div class="text-secondary font-medium">Send, Receive & Exchange securely</div>
+                    </div>
+                </div>
+                <div class="my-8 space-y-8">
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-14 h-14 rounded bg-red-100 text-red-800 dark:bg-red-600 dark:text-red-50">
+                                <mat-icon
+                                    class="text-current"
+                                    [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+                            </div>
+                            <div class="flex-auto ml-4 leading-none">
+                                <!-- <div class="text-sm font-medium text-secondary">Send Money</div> -->
+                                <div class="mt-2 font-medium text-2xl">Send</div>
+                            </div>
+                            <div class="flex items-end justify-center min-w-18 mt-auto ml-6">
+                                <button
+                                    mat-flat-button
+                                    [color]="'primary'"
+                                    (click)="redirectToBeneficiaries()"
+                                    >
+                                    <span>-></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-14 h-14 rounded bg-indigo-100 text-indigo-800 dark:bg-indigo-600 dark:text-indigo-50">
+                                <mat-icon
+                                    class="text-current"
+                                    [svgIcon]="'heroicons_outline:cash'"></mat-icon>
+                            </div>
+                            <div class="flex-auto ml-4 leading-none">
+                                <!-- <div class="text-sm font-medium text-secondary">Receive Money</div> -->
+                                <div class="mt-2 font-medium text-2xl">Receive</div>
+                            </div>
+                            <div class="flex items-end justify-center min-w-18 mt-auto ml-6">
+                                <button
+                                    [disabled]="selectedCurrency === 'otherCurrency'"
+                                    mat-flat-button
+                                    [color]="'primary'" (click)="receiveFiat()">
+                                    <span><-</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-14 h-14 rounded bg-teal-100 text-teal-800 dark:bg-teal-600 dark:text-teal-50">
+                                <mat-icon
+                                    class="text-current"
+                                    [svgIcon]="'heroicons_outline:light-bulb'"></mat-icon>
+                            </div>
+                            <div class="flex-auto ml-4 leading-none">
+                                <!-- <div class="text-sm font-medium text-secondary">Exchange</div> -->
+                                <div class="mt-2 font-medium text-2xl">Exchange</div>
+                            </div>
+                            <div class="flex items-end justify-center min-w-18 mt-auto ml-6">
+                                <button
+                                    [disabled]="selectedCurrency === 'otherCurrency'"
+                                    mat-flat-button
+                                    [color]="'primary'"(click)="selectedCurrency = 'exchange'">
+                                    <span><-></span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- <div class="mt-3 text-md text-secondary">Manage your account using above options</div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div  class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+    <div *ngIf="selectedCurrency === 'prymariCurrency'" class="grid grid-cols-1 xl:grid-cols-1 gap-8 w-full mt-8">
+        <!-- Recent transactions table -->
+        <div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+            <div class="p-6">
+                <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Transaction History</div>
+                <div class="text-secondary font-medium">Your recent transactions</div>
+            </div>
+            <div class="overflow-x-auto mx-6">
+                <table
+                    class="w-full bg-transparent"
+                    mat-table
+                    matSort
+                    [dataSource]="recentTransactionsDataSource"
+                    [trackBy]="trackByFn"
+                    #recentTransactionsTable>
+
+                    <!-- Transaction ID -->
+                    <ng-container matColumnDef="paymentID">
+                        <th
+                            mat-header-cell
+                            mat-sort-header
+                            *matHeaderCellDef>
+                            Payment ID
+                        </th>
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                                {{transaction.paymentDetails.paymentId}}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Date -->
+                    <ng-container matColumnDef="tableDate">
+                        <th
+                            mat-header-cell
+                            mat-sort-header
+                            *matHeaderCellDef>
+                            Date
+                        </th>
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span class="pr-6 whitespace-nowrap">
+                                {{transaction.send | date:'medium'}}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Name -->
+                    <ng-container matColumnDef="tableName">
+                        <th
+                            mat-header-cell
+                            mat-sort-header
+                            *matHeaderCellDef>
+                            Name
+                        </th>
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span class="pr-6 whitespace-nowrap">
+                                {{userNameData.fullName}}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Amount -->
+                    <ng-container matColumnDef="tableAmount">
+                        <th
+                            mat-header-cell
+                            mat-sort-header
+                            *matHeaderCellDef>
+                            Amount
+                        </th>
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span
+                                class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                [ngClass]="{' text-red-600 dark:text-red-50': transaction.credit === false,
+                                            'text-green-600  dark:text-green-50': transaction.credit === true}">
+                                <span class="leading-relaxed whitespace-nowrap">
+                                    <span *ngIf="transaction.credit === true">+ </span>
+                                    <span *ngIf="transaction.credit === false">- </span>
+                                    {{transaction.paymentDetails.amount | currency:transaction.paymentDetails.currency}}</span>
+                            </span>
+                        </td>
+                    </ng-container>
+
+
+                    <!-- Status -->
+                    <ng-container matColumnDef="tableStatus">
+                        <th
+                            mat-header-cell
+                            mat-sort-header
+                            *matHeaderCellDef>
+                            Status
+                        </th>
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span
+                                class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': transaction.status === 'pending',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': transaction.status === 'PROCESSED'}">
+                                <span class="leading-relaxed whitespace-nowrap">{{transaction.status}}</span>
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Footer -->
+                    <ng-container matColumnDef="recentOrdersTableFooter">
+                        <td
+                            class="py-6 px-0 border-0"
+                            mat-footer-cell
+                            *matFooterCellDef
+                            colspan="6">
+                            <button [routerLink]="['../transaction']" mat-stroked-button>See all transactions</button>
+                        </td>
+                    </ng-container>
+
+                    <tr
+                        mat-header-row
+                        *matHeaderRowDef="recentTransactionsTableColumns"></tr>
+                    <tr
+                        class="order-row h-16"
+                        mat-row
+                        *matRowDef="let row; columns: recentTransactionsTableColumns;"></tr>
+                    <tr
+                        class="h-16 border-0"
+                        mat-footer-row
+                        *matFooterRowDef="['recentOrdersTableFooter']"></tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

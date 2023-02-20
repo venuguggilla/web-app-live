@@ -1,0 +1,239 @@
+
+<div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden wallet-main">
+
+    <mat-drawer-container class="flex-auto sm:h-full bg-card">
+
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full md:w-160 bgGrayColor dark:bg-gray-900"
+            [autoFocus]="false"
+            [mode]="drawerMode"
+            [opened]="drawerOpened"
+            [position]="'end'"
+            #drawer>
+            <!-- Header -->
+            <div class="flex fcol items-center justify-between m-8 mr-6 sm:my-10">
+                <!-- Title -->
+                <div  class="text-3xl font-extrabold tracking-tight leading-none">
+                    {{(selectedTxAlert?.data?.reference_id | lowercase) || '---'}}</div>
+                    <div class="w-full mt-8">
+                        <div class="text-xl">{{selectedTxAlert?.transactionStatus}}: {{ selectedTxAlert?.request?.data?.document?.amount}}</div>
+                        <div class="text-secondary">{{selectedTxAlert?.data?.created_at | date : "medium"}}</div>
+                    </div>
+            <!-- transaction button -->
+            <div>
+            </div>
+            </div>
+            <div class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                <!-- About me -->
+                <div *ngIf="selectedTab.selectedMenu === 'transactionInfo'">
+                    <fuse-card class="flex flex-col mb-8 w-full p-8">
+                        <div class="text-2xl font-semibold leading-tight">{{selectedTab.name}}</div>
+                        <hr class="w-full border-t my-6">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="leading-none font-lable">Reference Id :</span>
+                                <span class="leading-none">{{selectedTxAlert?.data.reference_id !== null ?( selectedTxAlert?.data.reference_id || '---') : '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Created at :</span>
+                                <span class="leading-none"> {{(selectedTxAlert?.data?.created_at | date : "medium") || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Report :</span>
+                                <span class="leading-none"> <a (click)="exportPDF()" class="pointer" style="color: #625cfc;"><i
+                                    class="fa fa-file-pdf pointer hover"></i>PDF</a></span>
+                            </div>
+                           
+                        </div>
+                    </fuse-card>
+                </div>
+                <div *ngIf="selectedTab.selectedMenu === 'mappedTransactionFields'">
+                    <fuse-card class="flex flex-col mb-8 w-full p-8">
+                        <div class="text-2xl font-semibold leading-tight">{{selectedTab.name}}</div>
+                        <hr class="w-full border-t my-6">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="leading-none font-lable">Client :</span>
+                                <span class="leading-none">{{selectedTxAlert?.request?.data?.document?.client || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Transaction Number :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.docNum || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Date :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.docDate }}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Client Account :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.account || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Amount :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.amount || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Currency code :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.currency || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Beneficiary :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.bnfName || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Payment Details :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.details || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable">Beneficiary Registration Code :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.bnfId || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Beneficiary Residence :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.residenceName || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> External Payment Code :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.paycodeId || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Current payment code :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.paycodeName || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Beneficiary Residence Code :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.residenceId || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Sign In Ip Address :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.sign_data?.session_data?.ip_address || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Country Code (hardcode) :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.document?.countryCode || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Customer ID :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.customer_id || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Document ID :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.documentId || '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable"> Device ID :</span>
+                                <span class="leading-none"> {{selectedTxAlert?.request?.data?.sign_data?.device_id || '---'}}</span>
+                            </div>
+                        </div>
+                    </fuse-card>
+                </div>
+                <div *ngIf="selectedTab.selectedMenu === 'rulesAppleid'">
+                    <fuse-card class="flex flex-col mb-8 w-full p-8">
+                        <div class="text-2xl font-semibold leading-tight">{{selectedTab.name}}</div>
+                        <div class="flex flex-col" *ngFor="let rules of selectedTxAlert?.data.rules">
+                            <hr class="w-full border-t my-6">
+                            <div class="flex items-center">
+                                <span class="leading-none font-lable min-w-10">Id :</span>
+                                <span class="leading-none">{{rules.id !== null ?( rules.id || '---') : '---'}}</span>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <span class="leading-none font-lable min-w-10">Rule :</span>
+                                <span class="leading-none">{{rules.name !== null ?( rules.name || '---') : '---'}}</span>
+                            </div>
+                        </div>
+                    </fuse-card>
+                </div>
+            </div>
+            
+            
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+
+                <!-- Panel header -->
+                <div class="flex  items-center justify-between">
+                    <!-- Panel title -->
+                    <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                        {{userData.profile.firstName | lowercase}}
+                    </div>
+                    <div *ngIf="drawerOpened">
+                        <button
+                            mat-icon-button
+                            (click)="closeSub()">
+                            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full mt-8">
+                    <div class="text-xl">Change your plan</div>
+                    <div class="text-secondary">Upgrade or downgrade your current plan.lll</div>
+                </div>
+            
+            </div>
+            <div class="ml-4">
+                <!-- Panel links -->
+                <!-- *ngIf="fiatTransation !== ''"  -->
+                <div *ngIf="!drawerOpened" class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+                    <div class="mat-table-container">
+            
+                        <table mat-table [dataSource]="dataSource">
+                           
+                            <ng-container matColumnDef="txTransactionDate">
+                              <th mat-header-cell *matHeaderCellDef> Transaction date</th>
+                              <td mat-cell *matCellDef="let element"> {{(element?.data?.created_at | date : "medium") || '---'}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="txAmount">
+                              <th mat-header-cell *matHeaderCellDef> Amount </th>
+                              <td mat-cell *matCellDef="let element"> {{element?.request?.data?.document?.amount}} {{element?.request?.data?.document?.currency}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="txStatus">
+                              <th mat-header-cell *matHeaderCellDef> Status </th>
+                              <td mat-cell *matCellDef="let element"> {{element?.transactionStatus}} </td>
+                            </ng-container>
+            
+                            <ng-container matColumnDef="txScore">
+                                <th mat-header-cell *matHeaderCellDef> Score </th>
+                                <td mat-cell *matCellDef="let element"> {{element?.data?.score || '0.00'}} </td>
+                              </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                            (click)="selectionn(row)"></tr>
+                          </table>
+                        
+                          <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                                         showFirstLastButtons
+                                         aria-label="Select page of periodic elements">
+                          </mat-paginator>
+             
+                      </div>
+                </div>
+                <div *ngIf="drawerOpened" class="flex flex-col divide-y border-t border-b">
+                    <ng-container *ngFor="let panel of txAlertDetailedMenus">
+                        <div
+                            class="flex px-8 py-5 cursor-pointer"
+                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedPanel || selectedPanel !== panel?.selectedMenu,
+                                        'bg-primary-50 dark:bg-hover': selectedPanel && selectedPanel === panel?.selectedMenu}"
+                            (click)="tabSelected(panel)">
+                            <div class="ml-3">
+                                <div
+                                    class="font-medium leading-6"
+                                    [ngClass]="{'text-primary dark:text-primary-500': selectedPanel && selectedPanel === panel?.selectedMenu}">
+                                    {{panel?.name}}
+                                </div>
+                                <div class="mt-0.5 text-secondary">
+                                    {{panel?.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+               
+            </div>
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>

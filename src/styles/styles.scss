@@ -1,0 +1,179 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Import/write your custom styles here.
+/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/* ----------------------------------------------------------------------------------------------------- */
+textarea {
+    resize: none !important;
+  }
+.card-min-height{
+    min-height: 270px !important;
+    .background{
+        position: absolute !important;
+    }
+}
+.all-account:hover{
+    background-color: #e9edf1;
+    cursor: pointer;
+}
+.bank-card{
+    width: 400px;
+    position: relative;
+    display: flex;
+    float: left;
+    margin: 10px;
+    cursor: pointer;
+    .background{
+        position: relative;
+        img{
+            width: 100%;
+            border-radius: 0.2857rem;
+        }
+        .top-backround {
+            max-height: 100%;
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+        .top-backround-shadow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .top-left {
+            position: absolute;
+            left: 52px;
+            top: 30px;
+            font-weight: 600;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        .top-right {
+            position: absolute;
+            right: 50px;
+            top: 20px;
+            img{
+                width: 40px;
+            }
+        }
+        .bottom-left {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            color: #fff;
+            .bottom-price {
+                font-weight: 600;
+                font-size: 1.3rem;
+            }
+        }
+        .bottom-right {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            color: #fff;
+            .bottom-price {
+                font-weight: 600;
+                font-size: 1.3rem;
+            }
+        }
+    }
+}
+.mat-drawer.bgGrayColor{
+    background-color: #f1f6f9 !important;
+}
+.font-lable{
+    margin-right: 20px;
+    color: #9e9e9e;
+}
+.mat-table-container table{
+    width: 100%;
+}
+
+    .mat-column-amount, .mat-column-type, .mat-column-fromWallet, .mat-column-toWallet, .mat-column-transactionId,
+    .mat-column-ordertype, .mat-column-status
+    {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+    .mat-column-amount {
+        flex: 0 0 10% !important;
+        width: 10% !important;
+        padding: 15px !important;
+      }
+      .mat-column-fromWallet {
+        flex: 0 0 12% !important;
+        width: 10% !important;
+        padding: 15px !important;
+      }
+      .mat-column-type {
+        flex: 0 0 3% !important;
+        width: 3% !important;
+        padding: 15px !important;
+        img{
+            width: 80%;
+        }
+      }
+      .mat-column-toWallet {
+        flex: 0 0 22% !important;
+        width: 20% !important;
+        padding: 15px !important;
+      }
+      .mat-column-transactionId {
+        flex: 0 0 22% !important;
+        width: 20% !important;
+        padding: 15px !important;
+      }
+      .mat-column-ordertype {
+        flex: 0 0 5% !important;
+        width: 5% !important;
+        padding: 15px !important;
+      }
+      .mat-column-status {
+        flex: 0 0 5% !important;
+        width: 5% !important;
+        padding: 15px !important;
+      }
+.top-30{
+    bottom: 50px;
+}
+.createWalletBGPtnHeight{
+    height: 125px;
+}
+.disabled{
+    opacity: 0.4;
+    pointer-events: none;
+}
+.customBtn{
+    border-radius: 10px !important;
+    border-bottom-left-radius: 0% !important;
+    border-bottom-right-radius: 0% !important;
+    margin-bottom: 0 !important;
+    background-color: #f1f6f9 !important;
+    color: #000 !important;
+    border-top: 1px solid rgb(228, 228, 228) !important;
+    border-bottom: none !important;
+     
+}
+.customBtn-active{
+    background-color: #5046e5 !important;
+    color: #f1f6f9 !important;
+}
+.currency-card{
+    width: 170px;
+    img{
+        border: 1px solid;
+        width: 50px;
+    }
+    .eur-img{
+        border: 0px solid !important;
+        width: 36px !important;
+    }
+}

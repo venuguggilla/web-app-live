@@ -1,0 +1,113 @@
+<div class="flex flex-col flex-auto w-full">
+
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+
+        <!-- Title and action buttons -->
+        <div class="flex items-center justify-between w-full">
+            <div>
+                <h2 class="text-3xl font-semibold tracking-tight leading-8">Withdrawal Addressess</h2>
+                <div class="font-medium tracking-tight text-secondary">Keep track of your financial status</div>
+            </div>
+            <div class="flex items-center ml-6">
+                <button
+                    class="hidden sm:inline-flex ml-3"
+                    mat-flat-button
+                    [color]="'primary'">
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:save'"></mat-icon>
+                    <span class="ml-2">Export</span>
+                </button>
+
+                <!-- Actions menu (visible on xs) -->
+                <div class="sm:hidden">
+                    <button
+                        [matMenuTriggerFor]="actionsMenu"
+                        mat-icon-button>
+                        <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
+                    </button>
+                    <mat-menu #actionsMenu="matMenu">
+                        <button mat-menu-item>Reports</button>
+                    </mat-menu>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="grid grid-cols-1 xl:grid-cols-1 gap-8 w-full mt-8">
+            <!-- Recent transactions table -->
+            <div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto mx-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center mt-4">
+                            <span class="leading-none font-lable">Whitelist :</span>
+                        </div>
+                        <mat-slide-toggle
+                            class="ml-2"
+                            [color]="'primary'"
+                            [formControlName]="'meetups'"
+                            #meetupsToggle>
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto mx-6">
+                    <table
+                    class="w-full bg-transparent"
+                    mat-table
+                    matSort
+                    [dataSource]="recentTransactionsDataSource"
+                    [trackBy]="trackByFn"
+                    #recentTransactionsTable>
+
+                    <!-- Transaction ID -->
+                    <ng-container matColumnDef="paymentID">
+                        
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                                {{transaction.paymentDetails.paymentId}}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Name -->
+                    <ng-container matColumnDef="tableName">
+                       
+                        <td
+                            mat-cell
+                            *matCellDef="let transaction">
+                            <span class="pr-6 whitespace-nowrap">
+                                {{transaction.senderDetails.senderName}}
+                            </span>
+                        </td>
+                    </ng-container>
+
+
+
+                    <tr
+                        mat-header-row
+                        *matHeaderRowDef="recentTransactionsTableColumns"></tr>
+                    <tr
+                        class="order-row h-16"
+                        mat-row
+                        *matRowDef="let row; columns: recentTransactionsTableColumns;"></tr>
+                    <tr
+                        class="h-16 border-0"
+                        mat-footer-row
+                        *matFooterRowDef="['recentOrdersTableFooter']"></tr>
+                </table>
+                </div>
+            </div>
+
+            
+        </div>
+
+    </div>
+
+</div>
+
+
+

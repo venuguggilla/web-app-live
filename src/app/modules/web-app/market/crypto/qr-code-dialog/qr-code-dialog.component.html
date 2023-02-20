@@ -1,0 +1,32 @@
+<div class="flex flex-col max-h-screen -m-6">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <!-- <div class="text-lg font-medium">{{data?.title}}</div> -->
+        <div class="text-lg font-medium"></div>
+        <button mat-icon-button (click)="close()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- Content -->
+    <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+        <div class="w-full max-w-3xl">
+            <ng-container>
+                <!-- Section -->
+                <div class="w-full mt-6">
+                    <div class="text-xl">Receive Payment</div>
+                    <div class="text-secondary">Your wallet address is mentioned below that will receive the payment</div>
+                </div>
+                <div class="flex flex-col items-center mt-8">
+                    <div class="flex items-center">
+                        <span class="leading-none font-lable">Wallet Address :</span>
+                        <span class="leading-none">{{data?.qrValue}}</span>
+                    </div>
+                    <qr-code [value]="data?.qrValue" size="300" errorCorrectionLevel="M"></qr-code>
+                </div>
+            </ng-container>
+
+        </div>
+    </div>
+
+</div>

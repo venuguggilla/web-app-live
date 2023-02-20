@@ -1,0 +1,39 @@
+<div class="flex flex-col max-w-500 md:min-w-160 max-h-screen -m-6">
+    <!-- content -->
+    <div class="relative flex bg-gray-50 flex-col flex-auto items-center p-6 sm:p-12">
+        <div class="w-full max-w-3xl">
+            <!-- Logo -->
+            <div class="w-12 mx-auto">
+                <img src="assets/images/logo/logo.svg">
+            </div>
+
+            <!-- Title -->
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight text-center">You have signed out!
+            </div>
+            <div class="flex justify-center mt-0.5 font-medium">
+                <!-- Redirect countdown -->
+                <ng-container *ngIf="countdown > 0">
+                    Redirecting in &nbsp;<strong
+                        class="text-warn-500">{{countdown | i18nPlural: countdownMapping }}</strong>
+                </ng-container>
+
+                <!-- Redirect message -->
+                <ng-container *ngIf="countdown === 0">
+                    You are now being redirected!
+                </ng-container>
+            </div>
+
+            <!-- Form footer -->
+            <div class="flex font-medium justify-between mt-8 px-16 text-secondary">
+                <button mat-stroked-button class="ml-1 text-green-400" (click)="onStay()">
+                    Stay
+                </button>
+                <span>
+                    Go to
+                    <button mat-button color="primary" class="ml-1 text-primary-500 hover:underline"
+                        (click)="gotoLogin()">sign in</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

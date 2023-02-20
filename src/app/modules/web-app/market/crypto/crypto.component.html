@@ -1,0 +1,388 @@
+<div *ngIf="cryptoType.value !== 'swap'" class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+
+    <mat-drawer-container class="flex-auto h-full">
+
+        <!-- Drawer -->
+        <mat-drawer class="w-80" [autoFocus]="false" [mode]="drawerMode" [opened]="drawerOpened" #matDrawer>
+
+            <div class="flex flex-col flex-auto h-full dark:bg-default">
+                <!-- Buy / Sell -->
+                <div class="flex flex-col flex-auto shrink-0 pt-6 bg-gray-50 dark:bg-transparent">
+
+                    <!-- Action -->
+                    <div class="flex flex-col px-6 pb-2" *ngIf="cryptoType.value === 'send'">
+                        <mat-form-field>
+                            <mat-label>Action</mat-label>
+                            <span class="flex items-center justify-center" matPrefix>
+                                <ng-container *ngIf="cryptoType.value === 'send'">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:download'"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngIf="cryptoType.value === 'receive'">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:upload'"></mat-icon>
+                                </ng-container>
+                            </span>
+                            <mat-select [formControl]="cryptoType">
+                                <mat-option [value]="cType" *ngFor="let cType of cryptoTypes">{{cType | titlecase}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!-- Buy form -->
+                    <form class="flex flex-col px-6" [formGroup]="sendForm" *ngIf="cryptoType.value === 'send'">
+                        <mat-form-field class="w-full">
+                            <mat-label>Wallet</mat-label>
+                            <mat-select [formControlName]="'wallet'">
+                                <mat-select-trigger>
+                                    <span class="flex items-center">
+                                        <span class="flex items-center font-mono">
+                                            <span>{{sendForm.get('wallet').value.walletName | uppercase}}</span>
+                                        </span>
+                                    </span>
+                                </mat-select-trigger>
+                                <ng-container *ngIf="(wallets$ | async) as wallets">
+                                    <mat-option [value]="w" *ngFor="let w of wallets">{{w.walletName}}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <!-- <mat-hint class="flex items-center">
+                                <span class="mr-1">available balance:</span>
+                                <span class="font-mono font-medium text-normal">
+                                    {{data.wallets[sendForm.get('wallet').value] * data.prices[sendForm.get('wallet').value] | currency:'USD'}}
+                                </span>
+                            </mat-hint> -->
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                            <mat-label>Assets</mat-label>
+                            <mat-select [formControlName]="'asset'">
+                                <mat-select-trigger>
+                                    <span class="flex items-center">
+                                        <span
+                                            class="flex items-center font-mono">{{sendForm.get('asset')?.value.coinFullName}}
+                                            ({{sendForm.get('asset')?.value.testnetName}})</span>
+                                    </span>
+                                </mat-select-trigger>
+                                <mat-option [value]="a" *ngFor="let a of assets">{{a.coinFullName}}
+                                    ({{a.testnetName}})</mat-option>
+                            </mat-select>
+                            <!-- <mat-hint class="flex items-center">
+                                <span class="mr-1">available balance:</span>
+                                <span class="font-mono font-medium text-normal">
+                                    {{data.wallets[sendForm.get('wallet').value] * data.prices[sendForm.get('wallet').value] | currency:'USD'}}
+                                </span>
+                            </mat-hint> -->
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                            <mat-label>Address</mat-label>
+                            <input matInput autocomplete="off" [formControlName]="'address'">
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                            <mat-label>Amount</mat-label>
+                            <input matInput autocomplete="off" [formControlName]="'amount'">
+                            <mat-select [formControlName]="'networkType'" matSuffix>
+                                <mat-option [value]="network" *ngFor="let network of (networkList$ | async)">{{network}}
+                                </mat-option>
+                            </mat-select>
+                            <span matPrefix *ngIf="sendForm.get('networkType').value === 'usd'">
+                                $
+                            </span>
+                            <!-- <mat-hint class="flex items-center">
+                                <ng-container *ngIf="sendForm.get('networkType').value === 'coin'">
+                                    <span class="mr-1">It will cost:</span>
+                                    <span class="font-mono font-medium text-normal">
+                                        {{buyAmount.value * data.prices[sendForm.get('wallet').value] | currency:'USD':'symbol':'1.2-4'}}
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngIf="sendForm.get('networkType').value === 'usd'">
+                                    <span class="mr-1">You will receive:</span>
+                                    <span class="font-mono font-medium text-normal">
+                                        {{buyAmount.value / data.prices[sendForm.get('wallet').value] | number:'1.2-6'}} {{sendForm.get('wallet').value | uppercase}}
+                                    </span>
+                                </ng-container>
+                            </mat-hint> -->
+                        </mat-form-field>
+                        <button class="mt-4 mb-8" mat-flat-button [color]="'primary'" (click)="onSend()">
+                            BUY
+                        </button>
+                        <button class="mt-1 mb-8" mat-flat-button [color]="'accent'">
+                            Cancel
+                        </button>
+                    </form>
+
+                    <!-- Receive form -->
+                    <form class="flex flex-col px-6" [formGroup]="receiveForm" *ngIf="cryptoType.value === 'receive'">
+                        <mat-form-field class="w-full">
+                            <mat-label>Crypto</mat-label>
+                            <mat-select [formControlName]="'coinSymbol'">
+                                <mat-option [value]="a.fireblockAssetId" *ngFor="let a of assets">{{a.coinFullName}}
+                                    ({{a.testnetName}})</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                            <mat-label>Network</mat-label>
+                            <mat-select [formControlName]="'network'">
+                                <mat-option [value]="network" *ngFor="let network of (networkList$ | async)">{{network}}
+                                </mat-option>
+                            </mat-select>
+                            <span matPrefix *ngIf="receiveForm.get('network').value === 'usd'">
+                                $
+                            </span>
+                        </mat-form-field>
+                        <button class="mt-4 mb-8" mat-flat-button [color]="'primary'" (click)="onReceive()">
+                            Receive
+                        </button>
+                        <button class="mt-1 mb-8" mat-flat-button [color]="'accent'">
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </mat-drawer>
+
+        <!-- Content -->
+        <mat-drawer-content class="flex flex-col">
+
+            <!-- BTC Price -->
+            <div class="flex flex-col flex-auto min-h-full bg-card dark:bg-default">
+                <div class="flex flex-wrap items-center pl-4 pr-6 py-3 md:pl-6 border-b">
+                    <button class="mr-6 lg:hidden" mat-icon-button (click)="matDrawer.toggle()">
+                        <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                    </button>
+                    <div class="flex flex-col flex-auto my-3 mr-6">
+                        <div class="flex items-center">
+                            <ng-container *ngIf="(symbol$ | async) as symbol">
+                                <div class="font-medium text-2xl text-secondary mr-2">{{symbol.coinFullName}}</div>
+                                <!-- <div class="font-medium text-lg text-hint tracking-wider">(BTC)</div> -->
+                            </ng-container>
+                        </div>
+                        <!-- <div class="flex items-end mt-1">
+                            <div class="mr-2 font-mono text-3xl leading-none tracking-tight">
+                                {{data.btc.amount | currency:'USD':'symbol':'1.2-2'}}</div>
+                            <mat-icon class="text-green-500 icon-size-5 mr-0.5 mb-px"
+                                [ngClass]="{'text-green-500': data.btc.trend.dir === 'up', 'text-red-500': data.btc.trend.dir === 'down'}"
+                                [svgIcon]="data.btc.trend.dir === 'up' ? 'heroicons_solid:arrow-narrow-up' : 'heroicons_solid:arrow-narrow-down'">
+                            </mat-icon>
+                            <div class="font-mono font-medium text-lg leading-none mb-px"
+                                [ngClass]="{'text-green-500': data.btc.trend.dir === 'up', 'text-red-500': data.btc.trend.dir === 'down'}">
+                                {{data.btc.trend.amount}}%
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="hidden sm:flex items-center my-3">
+                        <div class="p-4 leading-none rounded-l-xl border border-r-0">
+                            <div class="text-sm font-medium text-secondary">Market Cap</div>
+                            <div class="mt-2 font-mono text-xl">
+                                {{(data.btc.marketCap / 1000000000) | number: '1.0-2' | currency}}B</div>
+                        </div>
+                        <div class="p-4 leading-none border border-r-0">
+                            <div class="text-sm font-medium text-secondary">Volume</div>
+                            <div class="mt-2 font-mono text-xl">
+                                {{(data.btc.volume / 1000000000) | number: '1.0-2' | currency}}B</div>
+                        </div>
+                        <div class="p-4 leading-none border border-r-0">
+                            <div class="text-sm font-medium text-secondary">Supply</div>
+                            <div class="mt-2 font-mono text-xl">{{(data.btc.supply / 1000000) | number: '1.0-2'}}M</div>
+                        </div>
+                        <div class="p-4 leading-none rounded-r-xl border">
+                            <div class="text-sm font-medium text-secondary">All Time High</div>
+                            <div class="mt-2 font-mono text-xl">{{data.btc.allTimeHigh | currency:'USD'}}</div>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="flex flex-col flex-auto tradingview-widget-container">
+                    <ng-container *ngIf="!isChatRefresh">
+                        <ng-container *ngIf="(symbol$ | async) as symbol">
+                            <app-real-time-trade-view [symbolPair]="symbol.symbolFormula">
+                            </app-real-time-trade-view>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+
+        </mat-drawer-content>
+
+    </mat-drawer-container>
+
+</div>
+
+<div *ngIf="cryptoType.value === 'swap'" class="flex flex-col flex-auto min-w-0">
+
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8 pb-0 md:pb-0">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full mt-8">
+            <!-- Recent transactions table -->
+            <div class="xl:col-span-2 flex p-6 flex-col flex-auto overflow-hidden">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight leading-8">Swap dashboard</h2>
+                    <div class="font-medium tracking-tight text-secondary">Keep track of your financial status</div>
+                </div>
+                <div class="flex items-center ">
+                    <div class="my-8 space-y-8">
+                        <form [formGroup]="swapForm">
+                            <div class="flex flex-col mt-8 bg-card shadow rounded overflow-hidden">
+                                <div class="p-8 bg-gray-50 dark:bg-gray-700">
+                                    <p class="text-lg font-medium">Basic information</p>
+                                    <p class="text-secondary">Set your login preferences, help us personalize your
+                                        experience and make big account changes here</p>
+                                </div>
+                                <mat-divider></mat-divider>
+                                <div class="p-8 pb-4">
+                                    <div
+                                        class="flex flex-col bg-gray-100 p-6 rounded gt-xs:flex-row gt-xs:items-baseline">
+                                        <span
+                                            class="flex items-center justify-between w-full font-semibold mb-1 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">
+                                            <span>
+                                                From
+                                            </span>
+                                            <span>
+                                                Available Balance: 0
+                                            </span>
+                                        </span>
+                                        <mat-form-field class="fuse-mat-dense flex-auto">
+                                            <input class="py-6 " matInput>
+                                            <span class="text-primary hover:text-primary-400 cursor-pointer" matSuffix>
+                                                Max
+                                            </span>
+                                            <span class="text-disabled px-6" matSuffix>
+                                                |
+                                            </span>
+                                            <span class="text-primary hover:text-primary-400 cursor-pointer" matSuffix>
+                                                <img style="width: 50px;"
+                                                    src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" />
+                                            </span>
+                                            <mat-select [value]="'kg'" matSuffix>
+                                                <mat-option [value]="'kg'">
+                                                    <span class="flex items-center">
+                                                        <img class="mr-3" style="width: 20px;"
+                                                            src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" />
+                                                        <span>Bitcoin</span>
+                                                    </span></mat-option>
+                                                <mat-option [value]="'gr'">
+                                                    <span class="flex items-center">
+                                                        <img class="mr-3" style="width: 20px;"
+                                                            src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" />
+                                                        <span>Bitcoin -2</span>
+                                                    </span></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex flex-col p-2 gt-xs:flex-row gt-xs:items-baseline">
+                                        <span class="flex relative items-center justify-center w-full">
+                                            <span style="width: 50px;height:50px"
+                                                class="flex items-center justify-center absolute bg-accent hover:bg-primary-400 cursor-pointer rounded-full border-2">
+                                                <mat-icon class="text-on-primary"
+                                                    svgIcon="heroicons_solid:switch-vertical"></mat-icon>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="flex flex-col bg-gray-100 p-6 rounded gt-xs:flex-row gt-xs:items-baseline">
+                                        <span
+                                            class="flex items-center justify-between w-full font-semibold mb-1 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">
+                                            <span>
+                                                to
+                                            </span>
+                                        </span>
+                                        <mat-form-field class="fuse-mat-dense flex-auto">
+                                            <input class="py-6" matInput>
+                                            <span class="text-disabled px-6" matSuffix>
+                                                |
+                                            </span>
+                                            <span class="text-primary hover:text-primary-400 cursor-pointer" matSuffix>
+                                                <img style="width: 50px;"
+                                                    src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" />
+                                            </span>
+                                            <mat-select [value]="'kg'" matSuffix>
+                                                <mat-option [value]="'kg'">
+                                                    <span class="flex items-center">
+                                                        <img class="mr-3" style="width: 20px;"
+                                                            src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" />
+                                                        <span>Bitcoin</span>
+                                                    </span></mat-option>
+                                                <mat-option [value]="'gr'">
+                                                    <span class="flex items-center">
+                                                        <img class="mr-3" style="width: 20px;"
+                                                            src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" />
+                                                        <span>Bitcoin -2</span>
+                                                    </span></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end mt-10">
+                                <button mat-button>
+                                    Cancel
+                                </button>
+                                <button class="px-6 ml-3" mat-flat-button [color]="'primary'">
+                                    Swap
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto">
+
+                <!-- <div class="mt-6">
+                    Last month; you had <strong>223</strong> expense transactions, <strong>12</strong> savings entries and <strong>4</strong> bills.
+                </div> -->
+                <fuse-card class="flex flex-col max-w-80 w-full mt-8 px-8 pt-6 pb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-2xl font-semibold leading-tight">News</div>
+                    </div>
+                    <div class="flex flex-col mt-5">
+                        <div class="flex">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div><b>20% OFF</b> in your favorite hats shop on next Friday.</div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Upcoming meetups within 20 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Concerts from your favorite bands available within 100 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-card>
+                <fuse-card class="flex flex-col max-w-80 w-full mt-8 px-8 pt-6 pb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-2xl font-semibold leading-tight">News</div>
+                    </div>
+                    <div class="flex flex-col mt-5">
+                        <div class="flex">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div><b>20% OFF</b> in your favorite hats shop on next Friday.</div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Upcoming meetups within 20 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex mt-5">
+                            <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div>Concerts from your favorite bands available within 100 miles.
+                                <a class="text-secondary whitespace-nowrap hover:underline" [routerLink]="['./']">See
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-card>
+
+            </div>
+        </div>
+    </div>
+</div>

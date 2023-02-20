@@ -1,0 +1,124 @@
+<div class="flex flex-col max-w-280 md:min-w-160 max-h-screen -m-6">
+
+    <!-- Header -->
+    <div  class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">are you sure do you want to send ?</div>
+        <button
+            mat-icon-button
+            (click)="close()"
+            [tabIndex]="-1">
+            <mat-icon
+                class="text-current"
+                [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+
+    <ng-container *ngIf="oparationStatus === 'sendMoneyData'; else statusTemplate">
+        <!-- form -->
+        <div [ngSwitch]="'sendMoneyData'">
+            <ng-container *ngSwitchCase="'sendMoneyData'">
+                <ng-container *ngTemplateOutlet="sendMoneyData"></ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+
+
+  <!-- template's -->
+
+<ng-template #sendMoneyData>
+    <!-- Contact form -->
+    <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+        <div class="w-full max-w-3xl">
+          <ng-container>
+            <!-- Panel header -->
+                <div class="flex pt-9  items-center justify-between">
+                    <!-- Panel title -->
+                   
+                    <div class="grid sm:grid-cols-1 gap-6 w-full mt-8">
+                      <div class="w-full">
+                          <div class="text-xl">Details</div>
+                          <div class="text-secondary">Following information is publicly displayed, be careful!</div>
+                      </div>
+                      <div class="flex flex-col mb-8 w-full p-8">
+                          
+                          <div class="flex flex-col">
+                              <div *ngIf="newAccountDetails?.destination?.name" class="flex items-center">
+                                  <span class="leading-none font-lable">Beneficiarie Name :</span>
+                                  <span class="leading-none">{{newAccountDetails?.destination?.name}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.destination?.iban" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Beneficiarie iban :</span>
+                                  <span class="leading-none">{{newAccountDetails?.destination?.iban}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.destination?.type" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Beneficiarie type :</span>
+                                  <span class="leading-none">{{newAccountDetails?.destination?.type}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.destination?.id" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Beneficiarie id :</span>
+                                  <span class="leading-none">{{newAccountDetails?.destination?.id}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.sourceAccountId" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Source Account :</span>
+                                  <span class="leading-none">{{newAccountDetails?.sourceAccountId}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.amount" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Amount :</span>
+                                  <span class="leading-none">
+                                      <span *ngIf="newAccountDetails?.currency" >{{newAccountDetails?.currency}}</span>
+                                      {{newAccountDetails?.amount}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.name" class="flex items-center">
+                                  <span class="leading-none font-lable">Beneficiarie Name :</span>
+                                  <span class="leading-none">{{newAccountDetails?.name}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.sourceAmount" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Amount :</span>
+                                  <span class="leading-none"> <span *ngIf="newAccountDetails?.currency" >{{newAccountDetails?.currency }}</span> {{newAccountDetails?.sourceAmount}}</span>
+                              </div>
+                              <div *ngIf="newAccountDetails?.reference" class="flex items-center mt-4">
+                                  <span class="leading-none font-lable">Reference :</span>
+                                  <span class="leading-none">{{newAccountDetails?.reference}}</span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                   
+                </div>
+                <div class="ml-2 lg:ml-0 text-1xl font-bold tracking-tight leading-none">
+             
+                  <div class="flex items-center my-4 py-6">
+                    <!-- Discard -->
+                    <button class="ml-auto sm:ml-0 text-warn-500" (click)="close()">Discard</button>
+                 
+                    <button (click)="sendMoney()" class="px-6 ml-3" mat-flat-button [color]="'primary'">
+                        Send
+                    </button>
+                </div>
+                </div>
+        </ng-container>
+  
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #statusTemplate>
+    <div class="font-mono p-16 mb-10 text-2xl text-center" [ngSwitch]="oparationStatus">
+        <span class="text-primary-500" *ngSwitchCase="'processing'">
+            Processing...
+        </span>
+        <span class="text-green-500" *ngSwitchCase="'success'">
+            Transaction is successfully completed.
+        </span>
+        <span class="text-warn-500" *ngSwitchCase="'failed'">
+            Transaction is declined.
+        </span>
+    </div>
+</ng-template>
+
+   
+</div>
+
+
+
+

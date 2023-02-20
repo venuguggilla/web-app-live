@@ -1,0 +1,54 @@
+<ng-container *ngIf="assets?.length > 0; else noAssets">
+    <table class="w-full bg-transparent" mat-table [dataSource]="assets" [trackBy]="trackByFn" #recentTransactionsTable>
+        <ng-container matColumnDef="coinFullName">
+            <th mat-header-cell *matHeaderCellDef>
+                Assets Name
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap flex items-center"><img
+                        class="w-8 mr-2" *ngIf="element.coinImage" [alt]="'Product thumbnail image'"
+                        [src]="element.coinImage">
+                    {{element.coinFullName}} ({{element?.coinName || element?.testnetName}})
+                </span>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="availableAmount">
+            <th mat-header-cell *matHeaderCellDef>
+                Available Bal
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                    {{element.availableAmount}}
+                </span>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>
+                Action
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <span class="pr-6 font-medium text-sm text-primary whitespace-nowrap">
+                    <span class="pr-2 disabled text-primary-100 cursor-pointer"
+                        [routerLink]="['./send', element?.fireblockAssetId]">
+                        Send
+                    </span>
+                    <span class="pr-2 hover:text-primary-400 cursor-pointer"
+                    [routerLink]="['./receive', element?.fireblockAssetId]">
+                        Receive
+                    </span>
+                    <span class="pr-2 hover:text-primary-400 cursor-pointer"
+                    [routerLink]="['/crypto/swap']">
+                        Swap
+                    </span>
+                </span>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="assetesTableColumns"></tr>
+        <tr class="order-row h-16" mat-row *matRowDef="let row; columns: assetesTableColumns;"></tr>
+    </table>
+</ng-container>
+<ng-template #noAssets>
+    <div class="flex flex-col px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+        <p class="table-no-record" colspan="9">No Assets Found</p>
+    </div>
+</ng-template>

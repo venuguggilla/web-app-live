@@ -1,0 +1,132 @@
+<form [formGroup]="sellForm">
+    <div [formGroupName]="'from'"
+        class="flex flex-col bg-gray-100 p-6 rounded gt-xs:flex-row gt-xs:items-baseline">
+        <span
+            class="flex items-center justify-between w-full font-semibold mb-1 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">
+            <span>
+                From
+            </span>
+            <span>
+                Available Asset Balance:
+                <ng-container
+                    *ngIf="sellFromData.asseteAmount; else zeroBalTemplate;">
+                    {{sellFromData.asseteAmount}}
+                </ng-container>
+                <ng-template #zeroBalTemplate>
+                    0
+                </ng-template>
+            </span>
+        </span>
+        <mat-form-field class="fuse-mat-dense flex-auto">
+            <ng-container
+                *ngIf="sellForm.get('from').get('wallet')?.value.color as walletColor;">
+                <span class="text-primary hover:text-primary-400 cursor-pointer mr-2"
+                    matPrefix>
+                    <img style="width: 50px;"
+                        [src]="walletDesign.background[walletColor].img" />
+                </span>
+            </ng-container>
+            <mat-select class="py-6" [formControlName]="'wallet'">
+                <ng-container *ngIf="(wallets$ | async) as wallets">
+                    <mat-option [value]="w" *ngFor="let w of wallets">
+                        <span class="flex items-center">
+                            <img class="mr-3" style="width: 20px;"
+                                [src]=walletDesign.background[w.color].img />
+                            <span>{{w.walletName}}   {{w?.totalPortfolioBalance?.symbol}}{{w?.totalPortfolioBalance?.balance}}</span>
+                        </span>
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="fuse-mat-dense flex-auto">
+            <input (keyup)="getSellOnKeyPress('from')" class="py-6 " matInput [formControlName]="'amount'">
+            <span class="text-primary hover:text-primary-400 cursor-pointer" matSuffix>
+                Max
+            </span>
+            <span class="text-disabled px-6" matSuffix>
+                |
+            </span>
+            <span class="text-primary hover:text-primary-400 cursor-pointer" matSuffix>
+                <img style="width: 50px;"
+                    [src]="sellForm.get('from').get('asset')?.value.coinImage" />
+            </span>
+            <mat-select [formControlName]="'asset'" matSuffix>
+                <ng-container *ngFor="let fa of sellToAssets">
+                    <mat-option [value]="fa" *ngIf="fa.coinFullName !== 'BNB'">
+                        <span class="flex items-center">
+                            <img class="mr-3" style="width: 20px;"
+                                [src]="fa.coinImage" />
+                            <span>{{fa.coinFullName}} ({{fa.testnetName}})</span>
+                        </span>
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+        
+        <div class="flex justify-between"> 
+            <span>{{quntity + ' '+ sellFromData.selectedAssetsSymbol + ' = ' + primaryCurrnecySymble +' '+ sellFromData.amountRespectToOne}}</span>
+        </div>
+        <div class="flex justify-between"> 
+            <mat-error *ngIf="sellFromData.errorMsg">
+                {{sellFromData.errorMsg}}
+             </mat-error>
+            <!-- <span>Minimum Balance: {{fromData.minimumBalance}}</span> -->
+            <!-- <span>Total amount in EUR: {{sellToData.totalAmountInEur}}</span> -->
+            <!-- <span *ngIf="sellFromData.minimumSwapLimitMsg">{{sellFromData.minimumSwapLimitMsg}}</span> -->
+        </div>
+        
+    </div>
+    <!-- Switch Action -->
+    <div class="flex flex-col p-2 gt-xs:flex-row gt-xs:items-baseline disabled">
+        <span class="flex relative items-center justify-center w-full">
+            <span style="width: 50px;height:50px" matTooltip="Switch"
+                class="flex items-center justify-center absolute bg-accent hover:bg-primary-400 cursor-pointer rounded-full border-2">
+                <mat-icon class="text-on-primary"
+                    svgIcon="heroicons_solid:arrow-sm-down"></mat-icon>
+                <!-- <mat-icon class="text-on-primary"
+                    svgIcon="heroicons_solid:switch-vertical"></mat-icon> -->
+            </span>
+        </span>
+    </div>
+    <!-- To form group -->
+    <div [formGroupName]="'to'"
+        class="flex flex-col bg-gray-100 p-6 rounded gt-xs:flex-row gt-xs:items-baseline">
+        <span
+            class="flex items-center justify-between w-full font-semibold mb-1 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">
+            <span>
+                To
+            </span>
+        </span>
+        <mat-form-field class="fuse-mat-dense flex-auto">
+            <mat-select class="py-6" [formControlName]="'wallet'">
+                <ng-container *ngIf="(accounts$ | async) as accounts">
+                    <mat-option [value]="a" *ngFor="let a of accounts">
+                        <span class="flex items-center">
+                            <img class="mr-3" style="width: 20px;"
+                                [src]=a.imageUrl/>
+                            <span>{{a.accountName}} -- {{a.iban}}</span>
+                        </span>
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="fuse-mat-dense flex-auto">
+            <input (keyup)="getSellOnKeyPress('to')" class="py-6 " matInput [formControlName]="'amount'">
+        </mat-form-field>
+        <div class="flex justify-between"> 
+            <mat-error *ngIf="sellToData.errorMsg">
+                {{sellToData.errorMsg}}
+             </mat-error>
+        </div>
+       
+    </div>
+</form>
+
+<div class="flex items-center justify-end mt-10">
+    <button mat-button>
+        Cancel
+    </button>
+    <button class="px-6 ml-3" [disabled]="!ProceedSellValidate"  mat-flat-button [color]="'primary'" (click)="onSell()">
+        Proceed Sell
+    </button>
+</div>
